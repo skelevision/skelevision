@@ -1,0 +1,7 @@
+45x Case1 a  c  d 
+42x Case2 b  c  d 
+38x Case3 a  c  e 
+22x Case4 b  c  e
+21x Case5 b  c  c  e
+42x Case6 b  c  c  d 
+45x Case7 a  c  c  d 
