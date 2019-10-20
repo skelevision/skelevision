@@ -6,3 +6,15 @@ As the package isn't at the moment on pypi, we recommend installing it by clonin
 ```shell 
 pip install -e .
 ```
+
+## Development
+Make sure to first install all dependencies via:
+```shell
+pip install -r requirements.txt
+```
+
+### Testing
+You can run the following command from the root directory to start the test suit:
+```shell
+pytest
+```
