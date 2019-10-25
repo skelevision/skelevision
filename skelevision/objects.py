@@ -27,6 +27,9 @@ class TraceLog(MutableMapping):
                 "Cannot set value at key {} equal to {}.".format(key, value)
             )
         self.__traces[key] = value
+        # If there is a new activity add it to the set of labels
+        for activity in key:
+                self.__labels.add(activity)
 
     def __getitem__(self, key):
         return self.__traces[key]
