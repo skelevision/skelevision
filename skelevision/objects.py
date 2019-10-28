@@ -85,7 +85,7 @@ class TraceLog(MutableMapping):
 
         return pairs
 
-    def augment(self, start="[]", end="[>"):
+    def augment(self, start="[>", end="[]"):
         """Returns a similar TraceLog object where each trace contains an aditional
         start and end activity
         """
