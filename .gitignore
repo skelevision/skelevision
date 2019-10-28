@@ -106,3 +106,8 @@ venv.bak/
 # ,vscode
 .vscode/
 
+# Entire datasets
+*.xes
+
+# Profiling
+profiling/

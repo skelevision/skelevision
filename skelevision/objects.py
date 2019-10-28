@@ -85,6 +85,35 @@ class TraceLog(MutableMapping):
 
         return pairs
 
+    def augment(self, start="[]", end="[>"):
+        """Returns a similar TraceLog object where each trace contains an aditional
+        start and end activity
+        """
+        tl = TraceLog()
+        for key, value in self.__traces.items():
+            trace = (start,) + key + (end, )
+            tl[trace] = value
+        return tl
+
+    def save_to_file(self, filepath, format='txt'):
+        """Save a TraceLog object as a `.txt` file.
+        """
+        if len(self.__traces) == 0:
+            return False
+
+        output = ''
+
+        if format == 'txt':
+            for i, kv in enumerate(self.__traces.items()):
+                key = kv[0]
+                value = kv[1]
+                output += '{}x Case{} {}\n'.format(value, i, " ".join(key))
+            
+        with open(filepath, 'w') as f:
+            f.write(output)
+        
+        return True
+
     @staticmethod
     def from_txt(filepath, delimiter=None, frequency_idx=0, first_activity_idx=2):
         """Parses a `.txt` file containing a trace log and returns a TraceLog object of it.

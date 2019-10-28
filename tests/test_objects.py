@@ -146,3 +146,22 @@ class TestTraceLog(object):
         with pytest.raises(IllegalLogAction):
             tl = TraceLog.from_txt(os.path.join(DATA, "L2_invalid_frequency.txt"))
         
+    def test_augment(self):
+        tl = TraceLog.from_txt(os.path.join(DATA, "L2.txt"))
+        target = {
+            ("[]", "a", "b", "c", "d", "[>"): 3,
+            ("[]", "a", "c", "b", "d", "[>"): 4,
+            ("[]", "a", "b", "c", "e", "f", "b", "c", "d", "[>"): 2,
+            ("[]", "a", "b", "c", "e", "f", "c", "b", "d", "[>"): 1,
+            ("[]", "a", "c", "b", "e", "f", "b", "c", "d", "[>"): 2,
+            ("[]", "a", "c", "b", "e", "f", "b", "c", "e", "f", "c", "b", "d", "[>"): 1
+        }
+        tl_aug = tl.augment()
+
+        for k, v in target.items():
+            assert k in tl_aug
+            assert tl_aug[k] == v
+
+        for k, v in tl_aug.items():
+            assert k in target
+            assert target[k] == v

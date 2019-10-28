@@ -1,0 +1,14 @@
+1 Case1 a1 a2 a4 a5 a6 a2 a4 a5 a6 a4 a2 a5 a7
+1 Case2 a1 a2 a4 a5 a6 a3 a4 a5 a6 a4 a3 a5 a6 a2 a4 a5 a7
+1 Case3 a1 a2 a4 a5 a6 a3 a4 a5 a7
+2 Case4 a1 a2 a4 a5 a6 a3 a4 a5 a8
+1 Case5 a1 a2 a4 a5 a6 a4 a3 a5 a7
+4 Case6 a1 a2 a4 a5 a8 a4 a5
+1 Case7 a1 a3 a4 a5 a6 a4 a3 a5 a7
+1 Case8 a1 a3 a4 a5 a6 a4 a3 a5 a8
+1 Case9 a1 a3 a4 a5 a8
+1 Case10 a1 a4 a2 a5 a6 a4 a2 a5 a6 a3 a4 a5 a6 a2 a4 a5 a8
+3 Case11 a1 a4 a2 a5 a7
+1 Case12 a1 a4 a2 a5 a8
+1 Case13 a1 a4 a3 a5 a7
+1 Case14 a1 a4 a3 a5 a8
