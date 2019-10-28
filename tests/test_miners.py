@@ -69,3 +69,32 @@ class TestLogSkeleton(object):
         }
         f2a = LogSkeleton._LogSkeleton__freq_2_activities(t)
         assert f2a == target
+
+    def test__directly_follows_L1(self):
+        tl = TraceLog.from_txt(os.path.join(DATA, "L1.txt"))
+        target = {
+            ("[>", "a1"): 20,
+            ("a1", "a2"): 10, 
+            ("a1", "a3"): 3,
+            ("a1", "a4"): 7, 
+            ("a2", "a4"): 13,
+            ("a2", "a5"): 7,
+            ("a3", "a4"): 8,
+            ("a3", "a5"): 6,
+            ("a4", "a2"): 7,
+            ("a4", "a3"): 6,
+            ("a4", "a5"): 21,
+            ("a5", "a6"): 14,
+            ("a5", "a7"): 9,
+            ("a5", "a8"): 11,
+            ("a6", "a2"): 3,
+            ("a6", "a3"): 5,
+            ("a6", "a4"): 6,
+            ("a7", "[]"): 9,
+            ("a8", "[]"): 11,
+
+        }
+        tl_aug = tl.augment()
+        C_df = LogSkeleton()._LogSkeleton__directly_follows(tl_aug)
+        
+        assert C_df == target

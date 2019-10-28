@@ -28,6 +28,7 @@ class LogSkeleton(Miner):
         tl = log.augment()
         # Step 1: Mine equivalence relationship
         R_eq = self.__equivalence(tl)
+        R_df = self.__directly_follows(tl)
         pass
 
     def __equivalence(self, log):
@@ -87,3 +88,8 @@ class LogSkeleton(Miner):
                 f2a[value] = set()
             f2a[value].add(key)
         return f2a
+
+    def __directly_follows(self, log):
+        C_df = dict()
+
+        return C_df
