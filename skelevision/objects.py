@@ -1,3 +1,5 @@
+import itertools
+from copy import deepcopy
 from collections.abc import MutableMapping
 
 from sortedcontainers import SortedSet
@@ -84,6 +86,32 @@ class TraceLog(MutableMapping):
                 pairs[(ai, aj)] += 1 * self[trace]
 
         return pairs
+
+    def never_together(self):
+        """Returns a set of tuples, representing the pairs of the activities 
+        which are never together in any of the traces.
+        
+        Returns
+        -------
+        `set` of `tuples`
+            the pairs of the activities which are never together in any of the traces
+        """
+
+        pairs = set(itertools.combinations(self.labels, r=2))
+
+        for trace in self.__traces:
+            trace = SortedSet(trace)
+            trace_pairs = list(itertools.combinations(trace, r=2))
+            pairs_wc = deepcopy(pairs)
+
+            for pair in pairs:
+                if pair in trace_pairs:
+                    pairs_wc.discard(pair)
+
+            pairs = pairs_wc
+
+        return pairs
+
 
     @staticmethod
     def from_txt(filepath, delimiter=None, frequency_idx=0, first_activity_idx=2):
