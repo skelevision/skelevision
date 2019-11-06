@@ -106,5 +106,8 @@ venv.bak/
 # ,vscode
 .vscode/
 
-# Benchmarking
-/profiling
+# Entire datasets
+*.xes
+
+# Profiling
+profiling/

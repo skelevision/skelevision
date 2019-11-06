@@ -118,6 +118,67 @@ class TestTraceLog(object):
         with pytest.raises(ValueError):
             tl.successors(distance=-3.3)
 
+    def test_equivalence_L1(self):
+        tl = TraceLog.from_txt(os.path.join(DATA, "L1.txt"))
+        target = {("[]", "[>"), ("a1", "[]"), ("a1", "[>"), ("a4", "a5")}
+        tl_aug = tl.augment()
+        R_eq = tl_aug.equivalence()
+        
+        for el in target:
+            assert el in R_eq or el[::-1] in R_eq
+
+        for el in R_eq:
+            assert el in target or el[::-1] in target
+
+    def test_equivalence_L2(self):
+        tl = TraceLog.from_txt(os.path.join(DATA, "L2.txt"))
+        target = {("[]", "[>"), ("a", "[]"), ("a", "[>"), ("d", "[]"), ("d", "[>"), ("a", "d"), ("b", "c"), ("e", "f")}
+        tl_aug = tl.augment()
+        R_eq = tl_aug.equivalence()
+        
+        for el in target:
+            assert el in R_eq or el[::-1] in R_eq
+
+        for el in R_eq:
+            assert el in target or el[::-1] in target
+
+    def test_equivalence_L4(self):
+        tl = TraceLog.from_txt(os.path.join(DATA, "L4.txt"))
+        target = {("[]", "[>")}
+        tl_aug = tl.augment()
+        R_eq = tl_aug.equivalence()
+        
+        for el in target:
+            assert el in R_eq or el[::-1] in R_eq
+
+        for el in R_eq:
+            assert el in target or el[::-1] in target
+
+    def test_activity_2_freq(self):
+        t = ("a1", "a2", "a4", "a5", "a6", "a3", "a4", "a5", "a6", "a4", "a3", "a5", "a6", "a2", "a4", "a5", "a7")
+        target = {
+            "a1": 1,
+            "a2": 2,
+            "a3": 2,
+            "a4": 4,
+            "a5": 4,
+            "a6": 3,
+            "a7": 1,           
+        }
+        a2f = TraceLog.activity_2_freq(t)
+        assert a2f == target
+
+    def test_freq_2_activities(self):
+        t = ("a1", "a2", "a4", "a5", "a6", "a3", "a4", "a5", "a6", "a4", "a3", "a5", "a6", "a2", "a4", "a5", "a7")
+        target = {
+            1: {"a1", "a7"},
+            2: {"a2", "a3"},
+            3: {"a6"},
+            4: {"a4", "a5"}
+        }
+        f2a = TraceLog.freq_2_activities(t)
+        assert f2a == target
+
     def test_never_together(self):
         d = {
             ("a", "b", "c"): 2,
@@ -179,3 +240,22 @@ class TestTraceLog(object):
         with pytest.raises(IllegalLogAction):
             tl = TraceLog.from_txt(os.path.join(DATA, "L2_invalid_frequency.txt"))
         
+    def test_augment(self):
+        tl = TraceLog.from_txt(os.path.join(DATA, "L2.txt"))
+        target = {
+            ("[>", "a", "b", "c", "d", "[]"): 3,
+            ("[>", "a", "c", "b", "d", "[]"): 4,
+            ("[>", "a", "b", "c", "e", "f", "b", "c", "d", "[]"): 2,
+            ("[>", "a", "b", "c", "e", "f", "c", "b", "d", "[]"): 1,
+            ("[>", "a", "c", "b", "e", "f", "b", "c", "d", "[]"): 2,
+            ("[>", "a", "c", "b", "e", "f", "b", "c", "e", "f", "c", "b", "d", "[]"): 1
+        }
+        tl_aug = tl.augment()
+
+        for k, v in target.items():
+            assert k in tl_aug
+            assert tl_aug[k] == v
+
+        for k, v in tl_aug.items():
+            assert k in target
+            assert target[k] == v

@@ -87,6 +87,35 @@ class TraceLog(MutableMapping):
 
         return pairs
 
+    def augment(self, start="[>", end="[]"):
+        """Returns a similar TraceLog object where each trace contains an aditional
+        start and end activity
+        """
+        tl = TraceLog()
+        for key, value in self.__traces.items():
+            trace = (start,) + key + (end, )
+            tl[trace] = value
+        return tl
+
+    def save_to_file(self, filepath, format='txt'):
+        """Save a TraceLog object as a `.txt` file.
+        """
+        if len(self.__traces) == 0:
+            return False
+
+        output = ''
+
+        if format == 'txt':
+            for i, kv in enumerate(self.__traces.items()):
+                key = kv[0]
+                value = kv[1]
+                output += '{}x Case{} {}\n'.format(value, i, " ".join(key))
+            
+        with open(filepath, 'w') as f:
+            f.write(output)
+        
+        return True
+
     def never_together(self):
         """Returns a set of tuples, representing the pairs of the activities 
         which are never together in any of the traces.
@@ -112,6 +141,97 @@ class TraceLog(MutableMapping):
 
         return pairs
 
+    def equivalence(self):
+        """Returns a set of tuples, representing the pairs of the activities 
+        which are always together in all of the traces the same number of times.
+        
+        Returns
+        -------
+        `set``of `tuples`
+            the pairs of the activities which are always together in all of the 
+            traces the same number of times
+        """
+        R_eq_trace = dict()
+
+        for trace in self.__traces:
+            # Extract pairs in current trace
+            w = dict()
+            f2a = TraceLog.freq_2_activities(trace)
+            for s in f2a.values():
+                for pair in itertools.product(s, repeat=2):
+                    if pair[0] == pair[1]:
+                        continue
+                    if pair[0] not in w:
+                        w[pair[0]] = list()
+                    w[pair[0]].append(pair[1])
+
+            # Check if the relationships found till now still hold
+            for pair, value in R_eq_trace.items():
+                if value:
+                    if pair[0] not in w and pair[1] not in w:
+                        continue
+                    if pair[0] in w and pair[1] not in w[pair[0]]:
+                        R_eq_trace[pair] = False
+                        R_eq_trace[pair[::-1]] = False
+
+            # Check if there are new values to be added
+            for v0, values in w.items():
+                for v1 in values: 
+                    if (v0, v1) not in R_eq_trace:
+                        R_eq_trace[(v0, v1)] = True
+            
+        # Transform the dict to set
+        R_eq = set()
+        for pair, value in R_eq_trace.items():
+            if value:
+                R_eq.add(pair)
+
+        return R_eq
+
+    @staticmethod
+    def activity_2_freq(trace):
+        """For a given trace, return a mapping from activity to frequency in trace.
+        
+        Parameters
+        ----------
+        trace: `tuple` of `str`
+            a trace as a tuple of activities
+        
+        Returns
+        -------
+        `dict`
+            mapping from activity to frequency in trace
+        """
+        d = {}
+        for a in trace:
+            if a not in d:
+                d[a] = 0
+            d[a] += 1
+
+        return d
+
+    @staticmethod
+    def freq_2_activities(trace):
+        """For a given trace, return a mapping from frequency to set of activities, 
+        with that frequency in the trace.
+        
+        Parameters
+        ----------
+        trace: `tuple` of `str`
+            a trace as a tuple of activities
+        
+        Returns
+        -------
+        `dict`
+            mapping from frequency to `set` activities in trace
+        """
+        a2f = TraceLog.activity_2_freq(trace)
+        f2a = {}
+        for key, value in a2f.items():
+            if value not in f2a:
+                f2a[value] = set()
+            f2a[value].add(key)
+        return f2a
 
     @staticmethod
     def from_txt(filepath, delimiter=None, frequency_idx=0, first_activity_idx=2):
