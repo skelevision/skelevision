@@ -142,6 +142,15 @@ class TraceLog(MutableMapping):
         return pairs
 
     def equivalence(self):
+        """Returns a set of tuples, representing the pairs of the activities 
+        which are always together in all of the traces the same number of times.
+        
+        Returns
+        -------
+        `set``of `tuples`
+            the pairs of the activities which are always together in all of the 
+            traces the same number of times
+        """
         R_eq_trace = dict()
 
         for trace in self.__traces:
@@ -181,6 +190,18 @@ class TraceLog(MutableMapping):
 
     @staticmethod
     def activity_2_freq(trace):
+        """For a given trace, return a mapping from activity to frequency in trace.
+        
+        Parameters
+        ----------
+        trace: `tuple` of `str`
+            a trace as a tuple of activities
+        
+        Returns
+        -------
+        `dict`
+            mapping from activity to frequency in trace
+        """
         d = {}
         for a in trace:
             if a not in d:
@@ -191,6 +212,19 @@ class TraceLog(MutableMapping):
 
     @staticmethod
     def freq_2_activities(trace):
+        """For a given trace, return a mapping from frequency to set of activities, 
+        with that frequency in the trace.
+        
+        Parameters
+        ----------
+        trace: `tuple` of `str`
+            a trace as a tuple of activities
+        
+        Returns
+        -------
+        `dict`
+            mapping from frequency to `set` activities in trace
+        """
         a2f = TraceLog.activity_2_freq(trace)
         f2a = {}
         for key, value in a2f.items():
