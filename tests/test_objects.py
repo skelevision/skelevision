@@ -7,15 +7,16 @@ from skelevision import TraceLog, IllegalLogAction
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "datasets")
 
+
 class TestTraceLog(object):
-    
+
     def test_constructor(self):
         d = {
             ("a", "b", "c"): 2,
             ("a", "f"): 1
         }
         tl = TraceLog(d)
-        
+
         for k, v in d.items():
             assert k in tl
             assert tl[k] == v
@@ -34,7 +35,7 @@ class TestTraceLog(object):
 
         for a in tl.labels:
             assert a in labels
-    
+
         for a in labels:
             assert a in tl.labels
 
@@ -58,7 +59,7 @@ class TestTraceLog(object):
         for k, v in s_tl.items():
             assert k in s
             assert s[k] == v
-            
+
     def test_successors_distance_2(self):
         d = {
             ("a", "b", "c"): 2,
@@ -77,7 +78,7 @@ class TestTraceLog(object):
         for k, v in s_tl.items():
             assert k in s
             assert s[k] == v
-            
+
     def test_successors_loop_len_1(self):
         d = {
             ("a", "b", "c"): 2,
@@ -108,7 +109,7 @@ class TestTraceLog(object):
         tl = TraceLog(d)
         with pytest.raises(ValueError):
             tl.successors(distance=1.2)
-    
+
     def test_successors_exception_no_positive_integer(self):
         d = {
             ("a", "b", "c"): 2,
@@ -123,7 +124,7 @@ class TestTraceLog(object):
         target = {("[]", "[>"), ("a1", "[]"), ("a1", "[>"), ("a4", "a5")}
         tl_aug = tl.augment()
         R_eq = tl_aug.equivalence()
-        
+
         for el in target:
             assert el in R_eq or el[::-1] in R_eq
 
@@ -132,10 +133,11 @@ class TestTraceLog(object):
 
     def test_equivalence_L2(self):
         tl = TraceLog.from_txt(os.path.join(DATA, "L2.txt"))
-        target = {("[]", "[>"), ("a", "[]"), ("a", "[>"), ("d", "[]"), ("d", "[>"), ("a", "d"), ("b", "c"), ("e", "f")}
+        target = {("[]", "[>"), ("a", "[]"), ("a", "[>"), ("d", "[]"),
+                  ("d", "[>"), ("a", "d"), ("b", "c"), ("e", "f")}
         tl_aug = tl.augment()
         R_eq = tl_aug.equivalence()
-        
+
         for el in target:
             assert el in R_eq or el[::-1] in R_eq
 
@@ -147,7 +149,7 @@ class TestTraceLog(object):
         target = {("[]", "[>")}
         tl_aug = tl.augment()
         R_eq = tl_aug.equivalence()
-        
+
         for el in target:
             assert el in R_eq or el[::-1] in R_eq
 
@@ -155,7 +157,24 @@ class TestTraceLog(object):
             assert el in target or el[::-1] in target
 
     def test_activity_2_freq(self):
-        t = ("a1", "a2", "a4", "a5", "a6", "a3", "a4", "a5", "a6", "a4", "a3", "a5", "a6", "a2", "a4", "a5", "a7")
+        t = (
+            "a1",
+            "a2",
+            "a4",
+            "a5",
+            "a6",
+            "a3",
+            "a4",
+            "a5",
+            "a6",
+            "a4",
+            "a3",
+            "a5",
+            "a6",
+            "a2",
+            "a4",
+            "a5",
+            "a7")
         target = {
             "a1": 1,
             "a2": 2,
@@ -163,13 +182,30 @@ class TestTraceLog(object):
             "a4": 4,
             "a5": 4,
             "a6": 3,
-            "a7": 1,           
+            "a7": 1,
         }
         a2f = TraceLog.activity_2_freq(t)
         assert a2f == target
 
     def test_freq_2_activities(self):
-        t = ("a1", "a2", "a4", "a5", "a6", "a3", "a4", "a5", "a6", "a4", "a3", "a5", "a6", "a2", "a4", "a5", "a7")
+        t = (
+            "a1",
+            "a2",
+            "a4",
+            "a5",
+            "a6",
+            "a3",
+            "a4",
+            "a5",
+            "a6",
+            "a4",
+            "a3",
+            "a5",
+            "a6",
+            "a2",
+            "a4",
+            "a5",
+            "a7")
         target = {
             1: {"a1", "a7"},
             2: {"a2", "a3"},
@@ -198,7 +234,6 @@ class TestTraceLog(object):
         for pair in target:
             assert pair in nt
 
-
     def test_never_together_L1(self):
         tl = TraceLog.from_txt(os.path.join(DATA, "L1.txt"))
         target = {("a7", "a8")}
@@ -210,7 +245,6 @@ class TestTraceLog(object):
 
         for pair in target:
             assert pair in nt
-
 
     def test_from_txt(self):
         tl = TraceLog.from_txt(os.path.join(DATA, "L2.txt"))
@@ -233,13 +267,14 @@ class TestTraceLog(object):
 
     def test_from_txt_exception_duplicate_trace(self):
         with pytest.raises(IllegalLogAction):
-            tl = TraceLog.from_txt(os.path.join(DATA, "L2_duplicate_trace.txt"))
+            tl = TraceLog.from_txt(os.path.join(
+                DATA, "L2_duplicate_trace.txt"))
 
-    
     def test_from_txt_exception_invalid_frequency(self):
         with pytest.raises(IllegalLogAction):
-            tl = TraceLog.from_txt(os.path.join(DATA, "L2_invalid_frequency.txt"))
-        
+            tl = TraceLog.from_txt(os.path.join(
+                DATA, "L2_invalid_frequency.txt"))
+
     def test_augment(self):
         tl = TraceLog.from_txt(os.path.join(DATA, "L2.txt"))
         target = {

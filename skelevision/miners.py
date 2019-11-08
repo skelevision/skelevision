@@ -1,6 +1,7 @@
 import abc
 import itertools
 
+
 class Miner(abc.ABC):
 
     @abc.abstractmethod
@@ -14,6 +15,7 @@ class Miner(abc.ABC):
     @abc.abstractmethod
     def mine(self, log):
         pass
+
 
 class LogSkeleton(Miner):
 
@@ -32,5 +34,5 @@ class LogSkeleton(Miner):
 
         # Step 4: Mine never-together relationship
         R_nt = tl.never_together()
-        
+
         return (R_eq, R_nt)

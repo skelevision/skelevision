@@ -9,11 +9,11 @@ from .exceptions import IllegalLogAction
 
 class TraceLog(MutableMapping):
     """Representation of a trace log. Works like a base python dict,
-    where the keys are tuples denoting individual traces 
-    (e.g. '("a", "b", "c")' denoted trace 'abc') and the values 
-    denote the frequencies of the traces.         
+    where the keys are tuples denoting individual traces
+    (e.g. '("a", "b", "c")' denoted trace 'abc') and the values
+    denote the frequencies of the traces.
     """
-    
+
     def __init__(self, *args, **kwargs):
         self.__traces = dict()
         self.__traces.update(*args, **kwargs)
@@ -31,7 +31,7 @@ class TraceLog(MutableMapping):
         self.__traces[key] = value
         # If there is a new activity add it to the set of labels
         for activity in key:
-                self.__labels.add(activity)
+            self.__labels.add(activity)
 
     def __getitem__(self, key):
         return self.__traces[key]
@@ -51,7 +51,11 @@ class TraceLog(MutableMapping):
 
     def __repr__(self):
         """echoes class, id, & reproducible representation in the REPL"""
-        return "{}, D({})".format(super(TraceLog, self).__repr__(), self.__traces)
+        return "{}, D({})".format(
+            super(
+                TraceLog,
+                self).__repr__(),
+            self.__traces)
 
     @property
     def labels(self):
@@ -59,14 +63,15 @@ class TraceLog(MutableMapping):
         return self.__labels
 
     def successors(self, distance=1):
-        """Returns a mapping (aka. dict) from pairs of activities to frequency. 
-        A pair (a, b) is part of the mapping if activity b follows activity a, 
+        """Returns a mapping (aka. dict) from pairs of activities to frequency.
+        A pair (a, b) is part of the mapping if activity b follows activity a,
         at a certain distance, in any of the traces.
 
         Parameters
         ----------
         distance: int
-            Distance two activities have to be appart to be counted in the mapping.
+            Distance two activities have to be appart to be counted in the 
+            mapping.
         """
         if not float(distance).is_integer():
             raise ValueError("Distance has to be an integer.")
@@ -110,20 +115,21 @@ class TraceLog(MutableMapping):
                 key = kv[0]
                 value = kv[1]
                 output += '{}x Case{} {}\n'.format(value, i, " ".join(key))
-            
+
         with open(filepath, 'w') as f:
             f.write(output)
-        
+
         return True
 
     def never_together(self):
-        """Returns a set of tuples, representing the pairs of the activities 
+        """Returns a set of tuples, representing the pairs of the activities
         which are never together in any of the traces.
-        
+
         Returns
         -------
         `set` of `tuples`
-            the pairs of the activities which are never together in any of the traces
+            the pairs of the activities which are never together in any of the
+            traces
         """
 
         pairs = set(itertools.combinations(self.labels, r=2))
@@ -142,13 +148,14 @@ class TraceLog(MutableMapping):
         return pairs
 
     def equivalence(self):
-        """Returns a set of tuples, representing the pairs of the activities 
-        which are always together in all of the traces the same number of times.
-        
+        """Returns a set of tuples, representing the pairs of the activities
+        which are always together in all of the traces the same number of 
+        times.
+
         Returns
         -------
         `set``of `tuples`
-            the pairs of the activities which are always together in all of the 
+            the pairs of the activities which are always together in all of the
             traces the same number of times
         """
         R_eq_trace = dict()
@@ -176,10 +183,10 @@ class TraceLog(MutableMapping):
 
             # Check if there are new values to be added
             for v0, values in w.items():
-                for v1 in values: 
+                for v1 in values:
                     if (v0, v1) not in R_eq_trace:
                         R_eq_trace[(v0, v1)] = True
-            
+
         # Transform the dict to set
         R_eq = set()
         for pair, value in R_eq_trace.items():
@@ -191,12 +198,12 @@ class TraceLog(MutableMapping):
     @staticmethod
     def activity_2_freq(trace):
         """For a given trace, return a mapping from activity to frequency in trace.
-        
+
         Parameters
         ----------
         trace: `tuple` of `str`
             a trace as a tuple of activities
-        
+
         Returns
         -------
         `dict`
@@ -212,14 +219,14 @@ class TraceLog(MutableMapping):
 
     @staticmethod
     def freq_2_activities(trace):
-        """For a given trace, return a mapping from frequency to set of activities, 
+        """For a given trace, return a mapping from frequency to set of activities,
         with that frequency in the trace.
-        
+
         Parameters
         ----------
         trace: `tuple` of `str`
             a trace as a tuple of activities
-        
+
         Returns
         -------
         `dict`
@@ -234,7 +241,11 @@ class TraceLog(MutableMapping):
         return f2a
 
     @staticmethod
-    def from_txt(filepath, delimiter=None, frequency_idx=0, first_activity_idx=2):
+    def from_txt(
+            filepath,
+            delimiter=None,
+            frequency_idx=0,
+            first_activity_idx=2):
         """Parses a `.txt` file containing a trace log and returns a TraceLog object of it.
 
         Parameters
@@ -267,7 +278,8 @@ class TraceLog(MutableMapping):
                 try:
                     frequency = int((parts[frequency_idx]).replace("x", ""))
                 except Exception:
-                    raise IllegalLogAction("No frequency for trace: {}.".format(a))
+                    raise IllegalLogAction(
+                        "No frequency for trace: {}.".format(a))
 
                 if a in tl:
                     raise IllegalLogAction(
