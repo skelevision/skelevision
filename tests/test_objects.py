@@ -294,3 +294,127 @@ class TestTraceLog(object):
         for k, v in tl_aug.items():
             assert k in target
             assert target[k] == v
+
+    def test_sum_counter_L1(self):
+        tl = TraceLog.from_txt(os.path.join(DATA, "L1.txt"))
+        tl_aug = tl.augment()
+        target = {
+            "a1": 20,
+            "a2": 20,
+            "a3": 14,
+            "a4": 38,
+            "a5": 38,
+            "a6": 14,
+            "a7": 9,
+            "a8": 11,
+        }
+        for a,f in target.items():
+            count = tl_aug.sum_counter(tl_aug, a)
+            assert count == target[a]
+
+    def test_sum_counter_all_L1(self):
+        tl = TraceLog.from_txt(os.path.join(DATA, "L1.txt"))
+        tl_aug = tl.augment()
+        target = {
+            "a1": 20,
+            "a2": 20,
+            "a3": 14,
+            "a4": 38,
+            "a5": 38,
+            "a6": 14,
+            "a7": 9,
+            "a8": 11,
+        }
+        
+        count = tl_aug.sum_counter_all(tl_aug)
+        print(count)
+
+        for k, v in count.items():
+            assert k in target
+            assert target[k] == v
+
+        for a, f in target.items():
+            assert a in count
+            assert count[a] == f
+
+    def test_min_counter_L1(self):
+        tl = TraceLog.from_txt(os.path.join(DATA, "L1.txt"))
+        tl_aug = tl.augment()
+        target = {
+            "a1": 1,
+            "a2": 0,
+            "a3": 0,
+            "a4": 1,
+            "a5": 1,
+            "a6": 0,
+            "a7": 0,
+            "a8": 0,
+        }
+        for a,f in target.items():
+            count = tl_aug.min_counter(tl_aug, a)
+            assert count == target[a]
+
+    def test_max_counter_L1(self):
+        tl = TraceLog.from_txt(os.path.join(DATA, "L1.txt"))
+        tl_aug = tl.augment()
+        target = {
+            "a1": 1,
+            "a2": 3,
+            "a3": 2,
+            "a4": 4,
+            "a5": 4,
+            "a6": 3,
+            "a7": 1,
+            "a8": 1,
+        }
+        for a,f in target.items():
+            count = tl_aug.max_counter(tl_aug, a)
+            assert count == target[a]
+    
+    def test_min_counter_all_L1(self):
+        tl = TraceLog.from_txt(os.path.join(DATA, "L1.txt"))
+        tl_aug = tl.augment()
+        target = {
+            "a1": 1,
+            "a2": 0,
+            "a3": 0,
+            "a4": 1,
+            "a5": 1,
+            "a6": 0,
+            "a7": 0,
+            "a8": 0,
+        }
+        count = tl_aug.min_counter_all(tl_aug)
+        print(count)
+
+        for k, v in count.items():
+            assert k in target
+            assert target[k] == v
+
+        for a, f in target.items():
+            assert a in count
+            assert count[a] == f
+
+    def test_max_counter_all_L1(self):
+        tl = TraceLog.from_txt(os.path.join(DATA, "L1.txt"))
+        tl_aug = tl.augment()
+        target = {
+            "a1": 1,
+            "a2": 3,
+            "a3": 2,
+            "a4": 4,
+            "a5": 4,
+            "a6": 3,
+            "a7": 1,
+            "a8": 1,
+        }
+        count = tl_aug.max_counter_all(tl_aug)
+        print(count)
+
+        for k, v in count.items():
+            assert k in target
+            assert target[k] == v
+
+        for a, f in target.items():
+            assert a in count
+            assert count[a] == f

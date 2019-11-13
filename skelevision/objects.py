@@ -289,3 +289,150 @@ class TraceLog(MutableMapping):
                 tl[a] = frequency
 
         return tl
+
+    @staticmethod
+    def sum_counter(self, activity):
+        """Returns an int, representing the amount of times an activity can be found in the TraceLog.
+
+         Parameters
+        ----------
+        activity: 'str'
+            the name of the activity
+
+        Returns
+        -------
+        'int'
+            sum of all appearances of an activity
+        """
+        count = 0
+        for trace in self.__traces:
+            d= {}
+            d = self.activity_2_freq(trace)
+            if activity in d:
+                count += d[activity] * self.__getitem__(trace)
+        
+        return count
+
+    @staticmethod
+    def sum_counter_all(self):
+        """Returns a dict, representing a Mapping from activity to the amount of times the activity 
+        appears in the TraceLog.
+
+         Parameters
+        ----------
+        activity: 'str'
+            the name of the activity
+
+        Returns
+        -------
+        'dict'
+            Mapping from activity to the amount of times the activity appears in the TraceLog.
+        """
+        dict ={}
+        for activity in self.__labels:
+            dict[activity] = self.sum_counter(self, activity)
+        dict.pop("[>")
+        dict.pop("[]")
+        return dict
+
+    @staticmethod
+    def max_counter(self, activity):
+        """Returns an int, representing the max amount of times an activity can be found in any trace 
+        of the TraceLog.
+
+         Parameters
+        ----------
+        activity: 'str'
+            the name of the activity
+
+        Returns
+        -------
+        'int'
+            min amount of appearances of an activity in any trace
+        """
+        count = 0
+        count2 = 0
+        for trace in self.__traces:
+            d= {}
+            d = self.activity_2_freq(trace)
+            if activity in d:
+                count2 = d[activity]
+            if count2 > count:
+                count = count2
+        
+        return count
+
+    @staticmethod
+    def min_counter(self, activity):
+        """Returns an int, representing the min amount of times an activity can be found in any trace 
+        of the TraceLog.
+
+         Parameters
+        ----------
+        activity: 'str'
+            the name of the activity
+
+        Returns
+        -------
+        'int'
+            min amount of appearances of an activity in any trace
+        """
+        count = self.max_counter(self,activity)
+        count2 = 0
+        for trace in self.__traces:
+            d= {}
+            d = self.activity_2_freq(trace)
+            if activity in d:
+                count2 = d[activity]
+            else:
+                return 0
+            if count2 < count:
+                count = count2
+        
+        return count
+
+    @staticmethod
+    def min_counter_all(self):
+        """Returns a dict, representing a Mapping from activity to the min amount of times the 
+        activity appears in any trace of the TraceLog.
+
+         Parameters
+        ----------
+        activity: 'str'
+            the name of the activity
+
+        Returns
+        -------
+        'dict'
+            Mapping from activity to the min amount of times the activity appears in any trace of the TraceLog.
+        """
+        dict ={}
+        for activity in self.__labels:
+            dict[activity] = self.min_counter(self, activity)
+        dict.pop("[>")
+        dict.pop("[]")
+        return dict
+
+    @staticmethod
+    def max_counter_all(self):
+        """Returns a dict, representing a Mapping from activity to the max amount of times the 
+        activity appears in any trace of the TraceLog.
+
+         Parameters
+        ----------
+        activity: 'str'
+            the name of the activity
+
+        Returns
+        -------
+        'dict'
+            Mapping from activity to the max amount of times the activity appears in any trace of the TraceLog.
+        """
+        dict ={}
+        for activity in self.__labels:
+            dict[activity] = self.max_counter(self, activity)
+        dict.pop("[>")
+        dict.pop("[]")
+        return dict
+
+
