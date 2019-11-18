@@ -344,18 +344,31 @@ class TraceLog(MutableMapping):
         'dict'
             Mapping from activity to the amount of times the activity appears in the TraceLog.
         """
-        dict ={}
-        for activity in self.__labels:
-            count = 0
-            for trace in self.__traces:
-                d= {}
-                d = self.activity_2_freq(trace)
-                if activity in d:
-                    count += d[activity] * self.__getitem__(trace)
-            dict[activity] = count
-        dict.pop("[>")
-        dict.pop("[]")
-        return dict
+        # Renamed from dict to c as dict is a python keyword
+        # dict ={}
+        sum_c = dict()
+
+        for trace in self.__traces:
+            cur = self.activity_2_freq(trace)
+            for k, v in cur.items():
+                if k not in sum_c:
+                    sum_c[k] = 0
+                sum_c[k] += v * self.__traces[trace]
+        
+        # for activity in self.__labels:
+        #     count = 0
+        #     for trace in self.__traces:
+        #         d = {}
+        #         d = self.activity_2_freq(trace)
+        #         if activity in d:
+        #             count += d[activity] * self.__getitem__(trace)
+        #     dict[activity] = count
+
+        # Removed because it's case specific
+        # dict.pop("[>")
+        # dict.pop("[]")
+
+        return sum_c
 
     def min_counter(self):
         """Returns a dict, representing a Mapping from activity to the min amount of times the 
@@ -371,28 +384,20 @@ class TraceLog(MutableMapping):
         'dict'
             Mapping from activity to the min amount of times the activity appears in any trace of the TraceLog.
         """
-        dict ={}
-        m = self.max_counter()
-        for activity in self.__labels:
-            if activity == "[>" or activity == "[]":
-                count = 0
-            else:
-                count = m[activity]
-            count2 = 0
-            for trace in self.__traces:
-                d= {}
-                d = self.activity_2_freq(trace)
-                if activity in d:
-                    count2 = d[activity]
-                else:
-                    count = 0
-                    break
-                if count2 < count:
-                    count = count2
-            dict[activity] = count
-        dict.pop("[>")
-        dict.pop("[]")
-        return dict
+        base = dict()
+        for a in self.labels:
+            base[a] = 0
+        min_c = dict()
+        # dict ={}
+        for trace in self.__traces:
+            cur = deepcopy(base)
+            cur.update(self.activity_2_freq(trace))
+            for k, v in cur.items():
+                if k not in min_c:
+                    min_c[k] = v
+                elif v < min_c[k]:
+                    min_c[k] = v
+        return min_c
 
     def max_counter(self):
         """Returns a dict, representing a Mapping from activity to the max amount of times the 
@@ -408,19 +413,29 @@ class TraceLog(MutableMapping):
         'dict'
             Mapping from activity to the max amount of times the activity appears in any trace of the TraceLog.
         """
-        dict ={}
-        for activity in self.__labels:
-            count = 0
-            count2 = 0
-            for trace in self.__traces:
-                d = self.activity_2_freq(trace)
-                if activity in d:
-                    count2 = d[activity]
-                if count2 > count:
-                    count = count2
-            dict[activity] = count
-        dict.pop("[>")
-        dict.pop("[]")
-        return dict
+        max_c = dict()
+        # dict ={}
+        for trace in self.__traces:
+            cur = self.activity_2_freq(trace)
+            for k, v in cur.items():
+                if k not in max_c:
+                    max_c[k] = v
+                elif v > max_c[k]:
+                    max_c[k] = v
+        return max_c
+
+        # for activity in self.__labels:
+        #     count = 0
+        #     count2 = 0
+        #     for trace in self.__traces:
+        #         d = self.activity_2_freq(trace)
+        #         if activity in d:
+        #             count2 = d[activity]
+        #         if count2 > count:
+        #             count = count2
+        #     dict[activity] = count
+        # dict.pop("[>")
+        # dict.pop("[]")
+        # return dict
 
 

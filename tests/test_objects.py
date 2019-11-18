@@ -333,18 +333,19 @@ class TestTraceLog(object):
         tl = TraceLog.from_txt(os.path.join(DATA, "L1.txt"))
         tl_aug = tl.augment()
         target = {
+            "[]": 20,
+            "[>": 20,
             "a1": 20,
             "a2": 20,
             "a3": 14,
-            "a4": 38,
-            "a5": 38,
+            "a4": 34,
+            "a5": 34,
             "a6": 14,
             "a7": 9,
             "a8": 11,
         }
         
         count = tl_aug.sum_counter()
-        print(count)
 
         for k, v in count.items():
             assert k in target
@@ -358,6 +359,8 @@ class TestTraceLog(object):
         tl = TraceLog.from_txt(os.path.join(DATA, "L1.txt"))
         tl_aug = tl.augment()
         target = {
+            "[]": 1,
+            "[>": 1,
             "a1": 1,
             "a2": 0,
             "a3": 0,
@@ -381,6 +384,8 @@ class TestTraceLog(object):
         tl = TraceLog.from_txt(os.path.join(DATA, "L1.txt"))
         tl_aug = tl.augment()
         target = {
+            "[]": 1,
+            "[>": 1,
             "a1": 1,
             "a2": 3,
             "a3": 2,
@@ -404,6 +409,8 @@ class TestTraceLog(object):
         tl = TraceLog.from_txt(os.path.join(DATA, "L4.txt"))
         tl_aug = tl.augment()
         target = {
+            "[]": 255,
+            "[>": 255,
             "a": 128,
             "b": 127,
             "c": 363,
@@ -426,6 +433,8 @@ class TestTraceLog(object):
         tl = TraceLog.from_txt(os.path.join(DATA, "L4.txt"))
         tl_aug = tl.augment()
         target = {
+            "[]": 1,
+            "[>": 1,
             "a": 0,
             "b": 0,
             "c": 1,
@@ -446,6 +455,8 @@ class TestTraceLog(object):
         tl = TraceLog.from_txt(os.path.join(DATA, "L4.txt"))
         tl_aug = tl.augment()
         target = {
+            "[]": 1,
+            "[>": 1,
             "a": 1,
             "b": 1,
             "c": 2,
