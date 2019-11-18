@@ -187,6 +187,7 @@ class TraceLog(MutableMapping):
                 R_eq.add(pair)
 
         return R_eq
+        
 
     @staticmethod
     def activity_2_freq(trace):

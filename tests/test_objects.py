@@ -77,6 +77,43 @@ class TestTraceLog(object):
         for k, v in s_tl.items():
             assert k in s
             assert s[k] == v
+
+    
+    def test_successors_L1(self):
+        tl = TraceLog.from_txt(os.path.join(DATA, "L1.txt"))
+        tl = tl.augment()
+
+        target = {
+            ("[>", "a1"): 20,
+            ("a1", "a2"): 10,
+            ("a1", "a3"): 3,
+            ("a1", "a4"): 7,
+            ("a2", "a4"): 13,
+            ("a2", "a5"): 7,
+            ("a3", "a4"): 8,
+            ("a3", "a5"): 6,
+            ("a4", "a2"): 7,
+            ("a4", "a3"): 6,
+            ("a4", "a5"): 21,
+            ("a5", "a6"): 14,
+            ("a5", "a7"): 9,
+            ("a5", "a8"): 11,
+            ("a6", "a2"): 3,
+            ("a6", "a3"): 5,
+            ("a6", "a4"): 6,
+            ("a7", "[]"): 9,
+            ("a8", "[]"): 11,
+        }
+
+        s_tl = tl.successors()
+
+        for k, v in target.items():
+            assert k in s_tl
+            assert s_tl[k] == v
+
+        for k, v in s_tl.items():
+            assert k in target
+            assert target[k] == v
             
     def test_successors_loop_len_1(self):
         d = {
