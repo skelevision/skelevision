@@ -344,8 +344,6 @@ class TraceLog(MutableMapping):
         'dict'
             Mapping from activity to the amount of times the activity appears in the TraceLog.
         """
-        # Renamed from dict to c as dict is a python keyword
-        # dict ={}
         sum_c = dict()
 
         for trace in self.__traces:
@@ -354,19 +352,6 @@ class TraceLog(MutableMapping):
                 if k not in sum_c:
                     sum_c[k] = 0
                 sum_c[k] += v * self.__traces[trace]
-        
-        # for activity in self.__labels:
-        #     count = 0
-        #     for trace in self.__traces:
-        #         d = {}
-        #         d = self.activity_2_freq(trace)
-        #         if activity in d:
-        #             count += d[activity] * self.__getitem__(trace)
-        #     dict[activity] = count
-
-        # Removed because it's case specific
-        # dict.pop("[>")
-        # dict.pop("[]")
 
         return sum_c
 
@@ -388,7 +373,6 @@ class TraceLog(MutableMapping):
         for a in self.labels:
             base[a] = 0
         min_c = dict()
-        # dict ={}
         for trace in self.__traces:
             cur = deepcopy(base)
             cur.update(self.activity_2_freq(trace))
@@ -414,7 +398,6 @@ class TraceLog(MutableMapping):
             Mapping from activity to the max amount of times the activity appears in any trace of the TraceLog.
         """
         max_c = dict()
-        # dict ={}
         for trace in self.__traces:
             cur = self.activity_2_freq(trace)
             for k, v in cur.items():
@@ -423,19 +406,5 @@ class TraceLog(MutableMapping):
                 elif v > max_c[k]:
                     max_c[k] = v
         return max_c
-
-        # for activity in self.__labels:
-        #     count = 0
-        #     count2 = 0
-        #     for trace in self.__traces:
-        #         d = self.activity_2_freq(trace)
-        #         if activity in d:
-        #             count2 = d[activity]
-        #         if count2 > count:
-        #             count = count2
-        #     dict[activity] = count
-        # dict.pop("[>")
-        # dict.pop("[]")
-        # return dict
 
 
