@@ -6,10 +6,10 @@ with open("README.md", "r") as fh:
 URL = "https://github.com/RCoanda/skelevision"
 
 classifiers = [
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: BSD License",
-        "Operating System :: OS Independent",
-    ]
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+]
 
 setuptools.setup(
     name="skelevision",

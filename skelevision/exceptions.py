@@ -3,4 +3,3 @@ class IllegalLogAction(Exception):
     in a trace-to-frequency log import duplicated traces)
     """
     pass
-
