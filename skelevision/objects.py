@@ -184,6 +184,7 @@ class TraceLog(MutableMapping):
                 R_eq.add(pair)
 
         return R_eq
+        
 
     def always_after(self):
         '''Returns a set of tuples, representing the pairs of the activities
