@@ -3,7 +3,7 @@
 1 Case3 a1 a2 a4 a5 a6 a3 a4 a5 a7
 2 Case4 a1 a2 a4 a5 a6 a3 a4 a5 a8
 1 Case5 a1 a2 a4 a5 a6 a4 a3 a5 a7
-4 Case6 a1 a2 a4 a5 a8 a4 a5
+4 Case6 a1 a2 a4 a5 a8
 1 Case7 a1 a3 a4 a5 a6 a4 a3 a5 a7
 1 Case8 a1 a3 a4 a5 a6 a4 a3 a5 a8
 1 Case9 a1 a3 a4 a5 a8

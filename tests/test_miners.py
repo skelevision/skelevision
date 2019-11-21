@@ -5,5 +5,4 @@ DATA = os.path.join(HERE, "datasets")
 
 
 class TestLogSkeleton(object):
-
     pass
