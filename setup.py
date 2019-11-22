@@ -13,7 +13,7 @@ classifiers = [
 
 setuptools.setup(
     name="skelevision",
-    version="0.0.1dev",
+    version="0.1",
     description="Log Skeleton Visualizer and Browser",
     long_description=long_description,
     long_description_content_type="text/markdown",
