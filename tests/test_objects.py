@@ -338,6 +338,44 @@ class TestTraceLog(object):
             assert k in target
             assert target[k] == v
 
+    def test_from_xes(self):
+        tl = TraceLog.from_xes(os.path.join(DATA, "L2.xes"))
+        target = {
+            ("a", "b", "c", "d"): 3,
+            ("a", "c", "b", "d"): 4,
+            ("a", "b", "c", "e", "f", "b", "c", "d"): 2,
+            ("a", "b", "c", "e", "f", "c", "b", "d"): 1,
+            ("a", "c", "b", "e", "f", "b", "c", "d"): 2,
+            ("a", "c", "b", "e", "f", "b", "c", "e", "f", "c", "b", "d"): 1,
+        }
+
+        for k, v in target.items():
+            assert k in tl
+            assert tl[k] == v
+
+        for k, v in tl.items():
+            assert k in target
+            assert target[k] == v
+
+    def test_from_xes_gunzip(self):
+        tl = TraceLog.from_xes(os.path.join(DATA, "L2.xes.gz"))
+        target = {
+            ("a", "b", "c", "d"): 3,
+            ("a", "c", "b", "d"): 4,
+            ("a", "b", "c", "e", "f", "b", "c", "d"): 2,
+            ("a", "b", "c", "e", "f", "c", "b", "d"): 1,
+            ("a", "c", "b", "e", "f", "b", "c", "d"): 2,
+            ("a", "c", "b", "e", "f", "b", "c", "e", "f", "c", "b", "d"): 1,
+        }
+
+        for k, v in target.items():
+            assert k in tl
+            assert tl[k] == v
+
+        for k, v in tl.items():
+            assert k in target
+            assert target[k] == v
+
     def test_from_txt_exception_duplicate_trace(self):
         with pytest.raises(IllegalLogAction):
             tl = TraceLog.from_txt(os.path.join(DATA, "L2_duplicate_trace.txt"))

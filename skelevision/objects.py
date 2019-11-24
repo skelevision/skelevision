@@ -1,11 +1,12 @@
 import itertools
-from copy import deepcopy
 from collections.abc import MutableMapping
+from copy import deepcopy
 
+from pm4py.objects.log.importer.xes import factory as xes_import_factory
 from sortedcontainers import SortedSet
 
 from .exceptions import IllegalLogAction
-from .utils import follows, successors, predecessors
+from .utils import follows, predecessors, successors
 
 
 class TraceLog(MutableMapping):
@@ -59,6 +60,16 @@ class TraceLog(MutableMapping):
         """Returns all the unique labels of activities in the trace log."""
         return self.__labels
 
+    def augment(self, start="[>", end="[]"):
+        """Returns a similar TraceLog object where each trace contains an aditional
+        start and end activity
+        """
+        tl = TraceLog()
+        for key, value in self.__traces.items():
+            trace = (start,) + key + (end, )
+            tl[trace] = value
+        return tl
+
     def follows(self, distance=1):
         """Returns a mapping (aka. dict) from pairs of activities to frequency. 
         A pair (a, b) is part of the mapping if activity b follows activity a, 
@@ -83,16 +94,6 @@ class TraceLog(MutableMapping):
                 pairs[p] += p_freq * self.__traces[trace]
 
         return pairs
-
-    def augment(self, start="[>", end="[]"):
-        """Returns a similar TraceLog object where each trace contains an aditional
-        start and end activity
-        """
-        tl = TraceLog()
-        for key, value in self.__traces.items():
-            trace = (start,) + key + (end, )
-            tl[trace] = value
-        return tl
 
     def save_to_file(self, filepath, format='txt'):
         """Save a TraceLog object as a `.txt` file.
@@ -219,6 +220,15 @@ class TraceLog(MutableMapping):
         return pairs
 
     def always_before(self):
+        '''Returns a set of tuples, representing the pairs of the activities
+        which before any occurrence of the first activity the second activity always occurs.
+
+        Returns
+        -------
+        `set``of `tuples`
+            pairs of the activities which before any occurrence of the first activity the
+            second activity always occurs.
+        '''
         pairs = set(itertools.product(self.labels, repeat=2))
         pairs = pairs.difference((x,x) for x in self.__labels)
 
@@ -232,7 +242,7 @@ class TraceLog(MutableMapping):
                 pairs.discard((first, a))
                 pairs.discard((a, last))
             
-            # Remove pairs that don't respect always after relatioship
+            # Remove pairs that don't respect always before relatioship
             pairs_wc = deepcopy(pairs)
             for pair in pairs:
                 if pair[0] in p.keys() and pair[1] not in p[pair[0]]:
@@ -285,51 +295,6 @@ class TraceLog(MutableMapping):
                 f2a[value] = set()
             f2a[value].add(key)
         return f2a
-
-    @staticmethod
-    def from_txt(filepath, delimiter=None, frequency_idx=0, first_activity_idx=2):
-        """Parses a `.txt` file containing a trace log and returns a TraceLog object of it.
-
-        Parameters
-        ----------
-        filepath: path-like
-            The path to the `.txt` file.
-        delimiter: `str`
-            Character delimiting the different values. Default None, thus splitting by all the whitespace.
-        frequency_idx: `int`
-            Default 0.
-        first_activity_idx: `int`
-            Default 2.
-
-        Returns
-        -------
-        `TraceLog`
-            Mapping from activity to coresponding event list.
-        """
-        tl = TraceLog()
-
-        with open(filepath, "r") as f:
-            for row in f:
-
-                row = row.strip()
-                if len(row) == 0:
-                    continue
-
-                parts = row.split(delimiter)
-                a = tuple(parts[first_activity_idx:])
-                try:
-                    frequency = int((parts[frequency_idx]).replace("x", ""))
-                except Exception:
-                    raise IllegalLogAction("No frequency for trace: {}.".format(a))
-
-                if a in tl:
-                    raise IllegalLogAction(
-                        "Attempting to add trace {} twice.".format(a)
-                    )
-
-                tl[a] = frequency
-
-        return tl
 
     def sum_counter(self):
         """Returns a dict, representing a Mapping from activity to the amount of times the activity 
@@ -408,4 +373,60 @@ class TraceLog(MutableMapping):
                     max_c[k] = v
         return max_c
 
+    @staticmethod
+    def from_txt(filepath, delimiter=None, frequency_idx=0, first_activity_idx=2):
+        """Parses a `.txt` file containing a trace log and returns a TraceLog object of it.
 
+        Parameters
+        ----------
+        filepath: path-like
+            The path to the `.txt` file.
+        delimiter: `str`
+            Character delimiting the different values. Default None, thus splitting by all the whitespace.
+        frequency_idx: `int`
+            Default 0.
+        first_activity_idx: `int`
+            Default 2.
+
+        Returns
+        -------
+        `TraceLog`
+            Mapping from activity to coresponding event list.
+        """
+        tl = TraceLog()
+
+        with open(filepath, "r") as f:
+            for row in f:
+
+                row = row.strip()
+                if len(row) == 0:
+                    continue
+
+                parts = row.split(delimiter)
+                a = tuple(parts[first_activity_idx:])
+                try:
+                    frequency = int((parts[frequency_idx]).replace("x", ""))
+                except Exception:
+                    raise IllegalLogAction("No frequency for trace: {}.".format(a))
+
+                if a in tl:
+                    raise IllegalLogAction(
+                        "Attempting to add trace {} twice.".format(a)
+                    )
+
+                tl[a] = frequency
+
+        return tl
+
+    @staticmethod
+    def from_xes(filepath, tag="concept:name"):
+        log = xes_import_factory.apply(filepath, variant="iterparse")
+        tl = TraceLog()
+        for case in log:
+            a = tuple([event[tag] for event in case])
+
+            if a not in tl:
+                tl[a] = 0
+            tl[a] += 1
+
+        return tl
