@@ -39,4 +39,13 @@ class LogSkeleton(Miner):
         # Step 4: Mine never-together relationship
         R_nt = tl.never_together()
 
-        return (R_eq, R_aa, R_ab, R_nt)
+        # Step 5: Mine never-together relationship
+        R_df = set((tl.follows()).keys())
+        
+        # Step 6: Statistics
+        C_df = tl.follows()
+        C_sum = tl.sum_counter()
+        C_max = tl.max_counter()
+        C_min = tl.min_counter()
+
+        return (R_eq, R_aa, R_ab, R_nt, R_df), (C_df, C_sum, C_max, C_min)
