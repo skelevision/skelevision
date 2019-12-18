@@ -213,11 +213,11 @@ class TraceLog(MutableMapping):
             s = successors(trace)
 
             # Remove impossible pairs
-            first = trace[0]
-            last = trace[-1]
-            for a in self.__labels:
-                pairs.discard((a, first))
-                pairs.discard((last, a))
+            # first = trace[0]
+            # last = trace[-1]
+            # for a in self.__labels:
+            #     pairs.discard((a, first))
+            #     pairs.discard((last, a))
 
             # Remove pairs that don't respect always after relatioship
             pairs_wc = deepcopy(pairs)
@@ -469,7 +469,7 @@ class TraceLog(MutableMapping):
                 tag = tags
 
         return tag
-    
+
     @classmethod
     def get_string_tag(self, root):
         tag = ""
@@ -480,12 +480,12 @@ class TraceLog(MutableMapping):
                 tag = tags
 
         return tag
-    
+
     @staticmethod
     def from_xes(filepath):
         if filepath.endswith('.gz'):
             filepath = gzip.open(filepath, 'r')
-        
+
         data = etree.parse(filepath)
         root = data.getroot()
 
