@@ -2,6 +2,7 @@ import itertools, re
 from collections.abc import MutableMapping
 import xml.etree.ElementTree as etree
 from copy import deepcopy
+import gzip
 
 from pm4py.objects.log.importer.xes import factory as xes_import_factory
 from sortedcontainers import SortedSet
@@ -482,6 +483,9 @@ class TraceLog(MutableMapping):
     
     @staticmethod
     def from_xes(filepath):
+        if filepath.endswith('.gz'):
+            filepath = gzip.open(filepath, 'r')
+        
         data = etree.parse(filepath)
         root = data.getroot()
 
