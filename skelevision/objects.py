@@ -200,31 +200,17 @@ class TraceLog(MutableMapping):
             second activity always occurs.
         '''
         pairs = set(itertools.permutations(self.labels, r=2))
-        # pairs = pairs.difference((x,x) for x in self.__labels)
 
         # Remove impossible pairs
         first = "[>"
         last = "[]"
-        for a in pairs:
-            pairs.discard((a, first))
-            pairs.discard((last, a))
+        pairs = set([(a, b) for a, b in pairs if (a, b) != (a, first) and (a, b) != (last, b)])
 
         for trace in self.__traces:
             s = successors(trace)
 
-            # Remove impossible pairs
-            # first = trace[0]
-            # last = trace[-1]
-            # for a in self.__labels:
-            #     pairs.discard((a, first))
-            #     pairs.discard((last, a))
-
-            # Remove pairs that don't respect always after relatioship
-            pairs_wc = deepcopy(pairs)
-            for pair in pairs:
-                if pair[0] in s.keys() and pair[1] not in s[pair[0]]:
-                    pairs_wc.discard(pair)
-            pairs = pairs_wc
+            pairs_wc = set([(a, b) for a, b in pairs if a in s.keys() and b not in s[a]])
+            pairs = pairs - pairs_wc
 
         return pairs
 
@@ -239,31 +225,17 @@ class TraceLog(MutableMapping):
             second activity always occurs.
         '''
         pairs = set(itertools.permutations(self.labels, r=2))
-        # pairs = pairs.difference((x,x) for x in self.__labels)
 
         # remove impossible pairs
         first = "[>"
         last = "[]"
-        for a in self.__labels:
-            pairs.discard((first, a))
-            pairs.discard((a, last))
+        pairs = set([(a, b) for a, b in pairs if (a, b) != (first, b) and (a, b) != (a, last)])
 
         for trace in self.__traces:
             p = predecessors(trace)
 
-            # Remove impossible pairs
-            # first = trace[0]
-            # last = trace[-1]
-            # for a in self.__labels:
-            #     pairs.discard((first, a))
-            #     pairs.discard((a, last))
-
-            # Remove pairs that don't respect always before relatioship
-            pairs_wc = deepcopy(pairs)
-            for pair in pairs:
-                if pair[0] in p.keys() and pair[1] not in p[pair[0]]:
-                    pairs_wc.discard(pair)
-            pairs = pairs_wc
+            pairs_wc = set([(a, b) for a, b in pairs if a in p.keys() and b not in p[a]])
+            pairs = pairs - pairs_wc
 
         return pairs
 
