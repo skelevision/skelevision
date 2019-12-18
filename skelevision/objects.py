@@ -1,6 +1,6 @@
 import itertools, re
 from collections.abc import MutableMapping
-import xml.etree.ElementTree as etree
+from lxml import etree as etree
 from copy import deepcopy
 import gzip
 
@@ -457,21 +457,19 @@ class TraceLog(MutableMapping):
     def from_xes(filepath):
         if filepath.endswith('.gz'):
             filepath = gzip.open(filepath, 'r')
+        else:
+            filepath = filepath
 
         data = etree.parse(filepath)
         root = data.getroot()
 
-        trace_tag = TraceLog.get_trace_tag(root)
-
         tracelog = dict()
-        for item in root.findall(trace_tag):
+        for trace in root.findall('{*}trace'):
             single_trace = []
-            for events in item:
-                for event in events:
-                    string_tag = TraceLog.get_string_tag(event)
-                    if event.tag == string_tag:
-                        if event.attrib["key"] == "concept:name":
-                            single_trace.append(event.attrib["value"])
+            for events in trace:
+                for event in events.findall('{*}string'):
+                    if event.attrib["key"] == "concept:name":
+                        single_trace.append(event.attrib["value"])
 
             if tuple(single_trace) not in tracelog:
                 tracelog[tuple(single_trace)] = 0
