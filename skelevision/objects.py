@@ -1,8 +1,10 @@
 import itertools, re
 from collections.abc import MutableMapping
 import xml.etree.ElementTree as etree
+from lxml import etree as etree2
 from copy import deepcopy
 import gzip
+from io import BytesIO
 
 from pm4py.objects.log.importer.xes import factory as xes_import_factory
 from sortedcontainers import SortedSet
@@ -35,7 +37,7 @@ class TraceLog(MutableMapping):
         self.__traces[key] = value
         # If there is a new activity add it to the set of labels
         for activity in key:
-                self.__labels.add(activity)
+            self.__labels.add(activity)
 
     def __getitem__(self, key):
         return self.__traces[key]
@@ -68,7 +70,7 @@ class TraceLog(MutableMapping):
         """
         tl = TraceLog()
         for key, value in self.__traces.items():
-            trace = (start,) + key + (end, )
+            trace = (start,) + key + (end,)
             tl[trace] = value
         return tl
 
@@ -97,21 +99,21 @@ class TraceLog(MutableMapping):
 
         return pairs
 
-    def save_to_file(self, filepath, format='txt'):
+    def save_to_file(self, filepath, format="txt"):
         """Save a TraceLog object as a `.txt` file.
         """
         if len(self.__traces) == 0:
             return False
 
-        output = ''
+        output = ""
 
-        if format == 'txt':
+        if format == "txt":
             for i, kv in enumerate(self.__traces.items()):
                 key = kv[0]
                 value = kv[1]
-                output += '{}x Case{} {}\n'.format(value, i, " ".join(key))
+                output += "{}x Case{} {}\n".format(value, i, " ".join(key))
 
-        with open(filepath, 'w') as f:
+        with open(filepath, "w") as f:
             f.write(output)
 
         return True
@@ -188,9 +190,8 @@ class TraceLog(MutableMapping):
 
         return R_eq
 
-
     def always_after(self):
-        '''Returns a set of tuples, representing the pairs of the activities
+        """Returns a set of tuples, representing the pairs of the activities
         which after any occurrence of the first activity the second activity always occurs.
 
         Returns
@@ -198,7 +199,7 @@ class TraceLog(MutableMapping):
         `set``of `tuples`
             pairs of the activities which after any occurrence of the first activity the
             second activity always occurs.
-        '''
+        """
         pairs = set(itertools.permutations(self.labels, r=2))
         # pairs = pairs.difference((x,x) for x in self.__labels)
 
@@ -229,7 +230,7 @@ class TraceLog(MutableMapping):
         return pairs
 
     def always_before(self):
-        '''Returns a set of tuples, representing the pairs of the activities
+        """Returns a set of tuples, representing the pairs of the activities
         which before any occurrence of the first activity the second activity always occurs.
 
         Returns
@@ -237,7 +238,7 @@ class TraceLog(MutableMapping):
         `set``of `tuples`
             pairs of the activities which before any occurrence of the first activity the
             second activity always occurs.
-        '''
+        """
         pairs = set(itertools.permutations(self.labels, r=2))
         # pairs = pairs.difference((x,x) for x in self.__labels)
 
@@ -434,76 +435,38 @@ class TraceLog(MutableMapping):
 
         return tl
 
-    # replaced by custom function for parsing the xes file
-    # @staticmethod
-    # def from_xes(filepath, tag="concept:name"):
-    #     log = xes_import_factory.apply(filepath, variant="iterparse")
-    #     tl = TraceLog()
-    #     for case in log:
-    #         a = tuple([event[tag] for event in case])
-
-    #         if a not in tl:
-    #             tl[a] = 0
-    #         tl[a] += 1
-
-    #     return tl
-
-    @classmethod
-    def get_tags(self, root):
-        elemList = []
-        for elem in root.iter():
-            elemList.append(elem.tag)
-
-        # now I remove duplicities - by convertion to set and back to list
-        elemList = list(set(elemList))
-
-        return elemList
-
-    @classmethod
-    def get_trace_tag(self, root):
-        tag = ""
-        child_tags = self.get_tags(root)
-
-        for tags in child_tags:
-            if re.search(r'trace$', tags):
-                tag = tags
-
-        return tag
-    
-    @classmethod
-    def get_string_tag(self, root):
-        tag = ""
-        child_tags = self.get_tags(root)
-
-        for tags in child_tags:
-            if re.search(r'string$', tags):
-                tag = tags
-
-        return tag
-    
     @staticmethod
     def from_xes(filepath):
-        if filepath.endswith('.gz'):
-            filepath = gzip.open(filepath, 'r')
-        
-        data = etree.parse(filepath)
-        root = data.getroot()
+        file_context = filepath
 
-        trace_tag = TraceLog.get_trace_tag(root)
+        if filepath.endswith(".gz"):
+            with gzip.open(filepath, "r") as f:
+                file_context = BytesIO(f.read())
 
+        context = etree2.iterparse(file_context, events=["start", "end"])
+
+        in_event = False
         tracelog = dict()
-        for item in root.findall(trace_tag):
-            single_trace = []
-            for events in item:
-                for event in events:
-                    string_tag = TraceLog.get_string_tag(event)
-                    if event.tag == string_tag:
-                        if event.attrib["key"] == "concept:name":
-                            single_trace.append(event.attrib["value"])
+        
+        for tree_event, elem in context:
+            if elem.tag.endswith("trace"):
+                if tree_event == "start":
+                    trace = ()
+                else:
+                    if trace not in tracelog:
+                        tracelog[trace] = 0
+                    tracelog[trace] += 1
 
-            if tuple(single_trace) not in tracelog:
-                tracelog[tuple(single_trace)] = 0
+            if elem.tag.endswith("event"):
+                in_event = tree_event == "start"
 
-            tracelog[tuple(single_trace)] += 1
+            if (
+                in_event
+                and "key" in elem.attrib
+                and elem.attrib["key"] == "concept:name"
+            ):
+                if tree_event == "start":
+                    trace += (elem.attrib["value"],)
 
         return TraceLog(tracelog)
+

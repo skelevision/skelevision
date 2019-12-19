@@ -281,7 +281,7 @@ class TestTraceLog(object):
             assert pair in R_aa
 
     def test_always_after_xes(self):
-        tl = TraceLog.from_xes(os.path.join(DATA, "L2.xes"))
+        tl = TraceLog.from_xes(os.path.join(DATA, "L2.xes.gz"))
         target = {
             ("[>", "[]"),
             ("[>", "a"),
