@@ -280,6 +280,42 @@ class TestTraceLog(object):
         for pair in target:
             assert pair in R_aa
 
+    def test_always_after_xes(self):
+        tl = TraceLog.from_xes(os.path.join(DATA, "L2.xes.gz"))
+        target = {
+            ("[>", "[]"),
+            ("[>", "a"),
+            ("[>", "b"),
+            ("[>", "c"),
+            ("[>", "d"),
+            ("a", "b"),
+            ("a", "c"),
+            ("a", "d"),
+            ("b", "d"),
+            ("c", "d"),
+            ("e", "b"),
+            ("e", "c"),
+            ("e", "d"),
+            ("e", "f"),
+            ("f", "b"),
+            ("f", "c"),
+            ("f", "d"),
+            ("a", "[]"),
+            ("b", "[]"),
+            ("c", "[]"),
+            ("d", "[]"),
+            ("e", "[]"),
+            ("f", "[]"),
+        }
+        tl_aug = tl.augment()
+        R_aa = tl_aug.always_after()
+
+        for pair in R_aa:
+            assert pair in target
+
+        for pair in target:
+            assert pair in R_aa
+
     def test_always_before_L1(self):
         tl = TraceLog.from_txt(os.path.join(DATA, "L1.txt"))
         target = {

@@ -1,6 +1,10 @@
-import itertools
+import itertools, re
 from collections.abc import MutableMapping
+import xml.etree.ElementTree as etree
+from lxml import etree as etree2
 from copy import deepcopy
+import gzip
+from io import BytesIO
 
 from pm4py.objects.log.importer.xes import factory as xes_import_factory
 from sortedcontainers import SortedSet
@@ -11,11 +15,11 @@ from .utils import follows, predecessors, successors
 
 class TraceLog(MutableMapping):
     """Representation of a trace log. Works like a base python dict,
-    where the keys are tuples denoting individual traces 
-    (e.g. '("a", "b", "c")' denoted trace 'abc') and the values 
-    denote the frequencies of the traces.         
+    where the keys are tuples denoting individual traces
+    (e.g. '("a", "b", "c")' denoted trace 'abc') and the values
+    denote the frequencies of the traces.
     """
-    
+
     def __init__(self, *args, **kwargs):
         self.__traces = dict()
         self.__traces.update(*args, **kwargs)
@@ -33,7 +37,7 @@ class TraceLog(MutableMapping):
         self.__traces[key] = value
         # If there is a new activity add it to the set of labels
         for activity in key:
-                self.__labels.add(activity)
+            self.__labels.add(activity)
 
     def __getitem__(self, key):
         return self.__traces[key]
@@ -66,13 +70,13 @@ class TraceLog(MutableMapping):
         """
         tl = TraceLog()
         for key, value in self.__traces.items():
-            trace = (start,) + key + (end, )
+            trace = (start,) + key + (end,)
             tl[trace] = value
         return tl
 
     def follows(self, distance=1):
-        """Returns a mapping (aka. dict) from pairs of activities to frequency. 
-        A pair (a, b) is part of the mapping if activity b follows activity a, 
+        """Returns a mapping (aka. dict) from pairs of activities to frequency.
+        A pair (a, b) is part of the mapping if activity b follows activity a,
         at a certain distance, in any of the traces.
 
         Parameters
@@ -88,36 +92,36 @@ class TraceLog(MutableMapping):
 
             # Add all the items to the overall dictionary
             for p, p_freq in f.items():
-                # If it's not there yet, add the default value 
+                # If it's not there yet, add the default value
                 if p not in pairs:
                     pairs[p] = 0
                 pairs[p] += p_freq * self.__traces[trace]
 
         return pairs
 
-    def save_to_file(self, filepath, format='txt'):
+    def save_to_file(self, filepath, format="txt"):
         """Save a TraceLog object as a `.txt` file.
         """
         if len(self.__traces) == 0:
             return False
 
-        output = ''
+        output = ""
 
-        if format == 'txt':
+        if format == "txt":
             for i, kv in enumerate(self.__traces.items()):
                 key = kv[0]
                 value = kv[1]
-                output += '{}x Case{} {}\n'.format(value, i, " ".join(key))
-            
-        with open(filepath, 'w') as f:
+                output += "{}x Case{} {}\n".format(value, i, " ".join(key))
+
+        with open(filepath, "w") as f:
             f.write(output)
-        
+
         return True
 
     def never_together(self):
-        """Returns a set of tuples, representing the pairs of the activities 
+        """Returns a set of tuples, representing the pairs of the activities
         which are never together in any of the traces.
-        
+
         Returns
         -------
         `set` of `tuples`
@@ -142,11 +146,11 @@ class TraceLog(MutableMapping):
     def equivalence(self):
         """Returns a set of tuples, representing the pairs of the activities
         which are always together in all of the traces the same number of times.
-        
+
         Returns
         -------
         `set``of `tuples`
-            the pairs of the activities which are always together in all of the 
+            the pairs of the activities which are always together in all of the
             traces the same number of times
         """
         R_eq_trace = dict()
@@ -174,10 +178,10 @@ class TraceLog(MutableMapping):
 
             # Check if there are new values to be added
             for v0, values in w.items():
-                for v1 in values: 
+                for v1 in values:
                     if (v0, v1) not in R_eq_trace:
                         R_eq_trace[(v0, v1)] = True
-            
+
         # Transform the dict to set
         R_eq = set()
         for pair, value in R_eq_trace.items():
@@ -185,10 +189,9 @@ class TraceLog(MutableMapping):
                 R_eq.add(pair)
 
         return R_eq
-        
 
     def always_after(self):
-        '''Returns a set of tuples, representing the pairs of the activities
+        """Returns a set of tuples, representing the pairs of the activities
         which after any occurrence of the first activity the second activity always occurs.
 
         Returns
@@ -196,31 +199,24 @@ class TraceLog(MutableMapping):
         `set``of `tuples`
             pairs of the activities which after any occurrence of the first activity the
             second activity always occurs.
-        '''
-        pairs = set(itertools.product(self.labels, repeat=2))
-        pairs = pairs.difference((x,x) for x in self.__labels)
+        """
+        pairs = set(itertools.permutations(self.labels, r=2))
+
+        # Remove impossible pairs
+        first = "[>"
+        last = "[]"
+        pairs = set([(a, b) for a, b in pairs if (a, b) != (a, first) and (a, b) != (last, b)])
 
         for trace in self.__traces:
             s = successors(trace)
 
-            # Remove impossible pairs
-            first = trace[0]
-            last = trace[-1]
-            for a in self.__labels:
-                pairs.discard((a, first))
-                pairs.discard((last, a))
-            
-            # Remove pairs that don't respect always after relatioship
-            pairs_wc = deepcopy(pairs)
-            for pair in pairs:
-                if pair[0] in s.keys() and pair[1] not in s[pair[0]]:
-                    pairs_wc.discard(pair)
-            pairs = pairs_wc
-        
+            pairs_wc = set([(a, b) for a, b in pairs if a in s.keys() and b not in s[a]])
+            pairs = pairs - pairs_wc
+
         return pairs
 
     def always_before(self):
-        '''Returns a set of tuples, representing the pairs of the activities
+        """Returns a set of tuples, representing the pairs of the activities
         which before any occurrence of the first activity the second activity always occurs.
 
         Returns
@@ -228,38 +224,31 @@ class TraceLog(MutableMapping):
         `set``of `tuples`
             pairs of the activities which before any occurrence of the first activity the
             second activity always occurs.
-        '''
-        pairs = set(itertools.product(self.labels, repeat=2))
-        pairs = pairs.difference((x,x) for x in self.__labels)
+        """
+        pairs = set(itertools.permutations(self.labels, r=2))
+
+        # remove impossible pairs
+        first = "[>"
+        last = "[]"
+        pairs = set([(a, b) for a, b in pairs if (a, b) != (first, b) and (a, b) != (a, last)])
 
         for trace in self.__traces:
             p = predecessors(trace)
 
-            # Remove impossible pairs
-            first = trace[0]
-            last = trace[-1]
-            for a in self.__labels:
-                pairs.discard((first, a))
-                pairs.discard((a, last))
-            
-            # Remove pairs that don't respect always before relatioship
-            pairs_wc = deepcopy(pairs)
-            for pair in pairs:
-                if pair[0] in p.keys() and pair[1] not in p[pair[0]]:
-                    pairs_wc.discard(pair)
-            pairs = pairs_wc
-        
+            pairs_wc = set([(a, b) for a, b in pairs if a in p.keys() and b not in p[a]])
+            pairs = pairs - pairs_wc
+
         return pairs
 
     @staticmethod
     def activity_2_freq(trace):
         """For a given trace, return a mapping from activity to frequency in trace.
-        
+
         Parameters
         ----------
         trace: `tuple` of `str`
             a trace as a tuple of activities
-        
+
         Returns
         -------
         `dict`
@@ -275,14 +264,14 @@ class TraceLog(MutableMapping):
 
     @staticmethod
     def freq_2_activities(trace):
-        """For a given trace, return a mapping from frequency to set of activities, 
+        """For a given trace, return a mapping from frequency to set of activities,
         with that frequency in the trace.
-        
+
         Parameters
         ----------
         trace: `tuple` of `str`
             a trace as a tuple of activities
-        
+
         Returns
         -------
         `dict`
@@ -297,7 +286,7 @@ class TraceLog(MutableMapping):
         return f2a
 
     def sum_counter(self):
-        """Returns a dict, representing a Mapping from activity to the amount of times the activity 
+        """Returns a dict, representing a Mapping from activity to the amount of times the activity
         appears in the TraceLog.
 
          Parameters
@@ -322,7 +311,7 @@ class TraceLog(MutableMapping):
         return sum_c
 
     def min_counter(self):
-        """Returns a dict, representing a Mapping from activity to the min amount of times the 
+        """Returns a dict, representing a Mapping from activity to the min amount of times the
         activity appears in any trace of the TraceLog.
 
          Parameters
@@ -350,7 +339,7 @@ class TraceLog(MutableMapping):
         return min_c
 
     def max_counter(self):
-        """Returns a dict, representing a Mapping from activity to the max amount of times the 
+        """Returns a dict, representing a Mapping from activity to the max amount of times the
         activity appears in any trace of the TraceLog.
 
          Parameters
@@ -419,14 +408,39 @@ class TraceLog(MutableMapping):
         return tl
 
     @staticmethod
-    def from_xes(filepath, tag="concept:name"):
-        log = xes_import_factory.apply(filepath, variant="iterparse")
-        tl = TraceLog()
-        for case in log:
-            a = tuple([event[tag] for event in case])
+    def from_xes(filepath):
+        file_context = filepath
 
-            if a not in tl:
-                tl[a] = 0
-            tl[a] += 1
+        if filepath.endswith(".gz"):
+            with gzip.open(filepath, "r") as f:
+                file_context = BytesIO(f.read())
 
-        return tl
+        context = etree2.iterparse(file_context, events=["start", "end"])
+
+        in_event = False
+        tracelog = dict()
+
+        for tree_event, elem in context:
+            if elem.tag.endswith("trace"):
+                if tree_event == "start":
+                    trace = ()
+                else:
+                    if trace not in tracelog:
+                        tracelog[trace] = 0
+                    tracelog[trace] += 1
+
+            if elem.tag.endswith("event"):
+                in_event = tree_event == "start"
+
+            if (
+                in_event
+                and "key" in elem.attrib
+                and elem.attrib["key"] == "concept:name"
+            ):
+                if tree_event == "start":
+                    trace += (elem.attrib["value"],)
+            
+            elem.clear()
+
+        return TraceLog(tracelog)
+
