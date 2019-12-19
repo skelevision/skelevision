@@ -362,6 +362,40 @@ class TraceLog(MutableMapping):
                     max_c[k] = v
         return max_c
 
+    def filter_traces(self, reqA, forbA):
+        """Filters the tracelog based on required and forbidden activities.
+
+        Parameters
+        ----------
+        reqA: `set()`
+            If one or more of the selected activities
+            does not occur in a trace, the entire trace will be filtered out.
+        forbA: `set()`
+            If one or more of the selected activities
+            occurs in a trace, the entire trace will be filtered out.
+
+        Returns
+        -------
+        `TraceLog`
+            Mapping from activity to coresponding event list.
+        """
+
+        if reqA:
+            for trace in list(self.__traces):
+                for a in reqA:
+                    if a not in trace:
+                        self.__traces.__delitem__(trace)
+                        break
+
+        if forbA:
+            for trace in list(self.__traces):
+                for a in forbA:
+                    if a in trace:
+                        self.__traces.__delitem__(trace)
+                        break
+
+        return self.__traces
+
     @staticmethod
     def from_txt(filepath, delimiter=None, frequency_idx=0, first_activity_idx=2):
         """Parses a `.txt` file containing a trace log and returns a TraceLog object of it.

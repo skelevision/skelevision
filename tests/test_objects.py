@@ -583,3 +583,29 @@ class TestTraceLog(object):
         for a, f in target.items():
             assert a in count
             assert count[a] == f
+
+    def test_filter_traces(self):
+        tl = TraceLog.from_xes(os.path.join(DATA, "L2.xes"))
+        
+        reqA = {'a', 'b', 'c'}
+        forbA = {'e', 'f'}
+
+        # target = {
+        #     ('a', 'b', 'c', 'e', 'f', 'b', 'c', 'd') : 2,
+        #     ('a', 'b', 'c', 'e', 'f', 'c', 'b', 'd') : 1,
+        #     ('a', 'c', 'b', 'e', 'f', 'b', 'c', 'd') : 2,
+        #     ('a', 'c', 'b', 'e', 'f', 'b', 'c', 'e', 'f', 'c', 'b', 'd') : 1
+        # }
+
+        target = {
+            ('a', 'b', 'c', 'd') : 3,
+            ('a', 'c', 'b', 'd') : 4
+        }
+
+        fa = tl.filter_traces(reqA, forbA)
+
+        for k, v in fa.items():
+            assert k, v in target
+        
+        for k, v in tl.items():
+            assert k, v in fa
