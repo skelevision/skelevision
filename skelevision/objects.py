@@ -439,6 +439,8 @@ class TraceLog(MutableMapping):
             ):
                 if tree_event == "start":
                     trace += (elem.attrib["value"],)
+            
+            elem.clear()
 
         return TraceLog(tracelog)
 
