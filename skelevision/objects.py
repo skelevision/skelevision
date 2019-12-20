@@ -379,22 +379,23 @@ class TraceLog(MutableMapping):
         `TraceLog`
             Mapping from activity to coresponding event list.
         """
+        new = deepcopy(self)
 
         if reqA:
-            for trace in list(self.__traces):
+            for trace in new:
                 for a in reqA:
                     if a not in trace:
-                        self.__traces.__delitem__(trace)
+                        del new[trace]
                         break
 
         if forbA:
-            for trace in list(self.__traces):
+            for trace in new:
                 for a in forbA:
                     if a in trace:
-                        self.__traces.__delitem__(trace)
+                        del new[trace]
                         break
 
-        return self.__traces
+        return new
 
     @staticmethod
     def from_txt(filepath, delimiter=None, frequency_idx=0, first_activity_idx=2):
