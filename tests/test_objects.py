@@ -46,6 +46,49 @@ class TestTraceLog(object):
             assert k in s
             assert s[k] == v
 
+    def test_follows_L1(self):
+        tl = TraceLog.from_txt(os.path.join(DATA, "L1.txt"))
+        tl = tl.augment()
+
+        target = {
+            ("[>", "a1"): 20,
+            ("a1", "a2"): 10,
+            ("a1", "a3"): 3,
+            ("a1", "a4"): 7,
+
+            ("a2", "a4"): 13,
+            ("a2", "a5"): 7,
+
+            ("a3", "a4"): 8,
+            ("a3", "a5"): 6,
+
+            ("a4", "a2"): 7,
+            ("a4", "a3"): 6,
+            ("a4", "a5"): 21,
+            
+            ("a5", "a6"): 14,
+            ("a5", "a7"): 9,
+            ("a5", "a8"): 11,
+
+            ("a6", "a2"): 3,
+            ("a6", "a3"): 5,
+            ("a6", "a4"): 6,
+
+            ("a7", "[]"): 9,
+            ("a8", "[]"): 11,
+
+        }
+
+        tl_follows = tl.follows()
+
+        for k, v in target.items():
+            assert k in tl_follows
+            assert tl_follows[k] == v
+
+        for k, v in tl_follows.items():
+            assert k in target
+            assert target[k] == v
+
     def test_follows_distance_2(self):
         d = {("a", "b", "c"): 2, ("a", "f"): 1}
         s = {("a", "c"): 2}
@@ -583,3 +626,29 @@ class TestTraceLog(object):
         for a, f in target.items():
             assert a in count
             assert count[a] == f
+
+    def test_filter_traces(self):
+        tl = TraceLog.from_xes(os.path.join(DATA, "L2.xes"))
+        
+        reqA = {'a', 'b', 'c'}
+        forbA = {'e', 'f'}
+
+        # target = {
+        #     ('a', 'b', 'c', 'e', 'f', 'b', 'c', 'd') : 2,
+        #     ('a', 'b', 'c', 'e', 'f', 'c', 'b', 'd') : 1,
+        #     ('a', 'c', 'b', 'e', 'f', 'b', 'c', 'd') : 2,
+        #     ('a', 'c', 'b', 'e', 'f', 'b', 'c', 'e', 'f', 'c', 'b', 'd') : 1
+        # }
+
+        target = {
+            ('a', 'b', 'c', 'd') : 3,
+            ('a', 'c', 'b', 'd') : 4
+        }
+
+        fa = tl.filter_traces(reqA, forbA)
+
+        for k, v in fa.items():
+            assert k, v in target
+        
+        for k, v in tl.items():
+            assert k, v in fa
