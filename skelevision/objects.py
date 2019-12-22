@@ -1,11 +1,12 @@
-import itertools, re
-from collections.abc import MutableMapping
-import xml.etree.ElementTree as etree
-from lxml import etree as etree2
-from copy import deepcopy
 import gzip
+import itertools
+import re
+import xml.etree.ElementTree as etree
+from collections.abc import MutableMapping
+from copy import deepcopy
 from io import BytesIO
 
+from lxml import etree as etree2
 from pm4py.objects.log.importer.xes import factory as xes_import_factory
 from sortedcontainers import SortedSet
 
@@ -205,12 +206,16 @@ class TraceLog(MutableMapping):
         # Remove impossible pairs
         first = "[>"
         last = "[]"
-        pairs = set([(a, b) for a, b in pairs if (a, b) != (a, first) and (a, b) != (last, b)])
+        pairs = set(
+            [(a, b) for a, b in pairs if (a, b) != (a, first) and (a, b) != (last, b)]
+        )
 
         for trace in self.__traces:
             s = successors(trace)
 
-            pairs_wc = set([(a, b) for a, b in pairs if a in s.keys() and b not in s[a]])
+            pairs_wc = set(
+                [(a, b) for a, b in pairs if a in s.keys() and b not in s[a]]
+            )
             pairs = pairs - pairs_wc
 
         return pairs
@@ -230,12 +235,16 @@ class TraceLog(MutableMapping):
         # remove impossible pairs
         first = "[>"
         last = "[]"
-        pairs = set([(a, b) for a, b in pairs if (a, b) != (first, b) and (a, b) != (a, last)])
+        pairs = set(
+            [(a, b) for a, b in pairs if (a, b) != (first, b) and (a, b) != (a, last)]
+        )
 
         for trace in self.__traces:
             p = predecessors(trace)
 
-            pairs_wc = set([(a, b) for a, b in pairs if a in p.keys() and b not in p[a]])
+            pairs_wc = set(
+                [(a, b) for a, b in pairs if a in p.keys() and b not in p[a]]
+            )
             pairs = pairs - pairs_wc
 
         return pairs
@@ -362,7 +371,7 @@ class TraceLog(MutableMapping):
                     max_c[k] = v
         return max_c
 
-    def filter_traces(self, reqA, forbA):
+    def filter_traces(self, reqA=None, forbA=None):
         """Filters the tracelog based on required and forbidden activities.
 
         Parameters
@@ -379,22 +388,35 @@ class TraceLog(MutableMapping):
         `TraceLog`
             Mapping from activity to coresponding event list.
         """
+        if reqA is None:
+            reqA = []
+        if forbA is None:
+            forbA = []
 
-        if reqA:
-            for trace in list(self.__traces):
-                for a in reqA:
-                    if a not in trace:
-                        self.__traces.__delitem__(trace)
-                        break
+        if not isinstance(reqA, list):
+            reqA = list(reqA)
+        if not isinstance(forbA, list):
+            forbA = list(forbA)
 
-        if forbA:
-            for trace in list(self.__traces):
-                for a in forbA:
-                    if a in trace:
-                        self.__traces.__delitem__(trace)
-                        break
+        traces = list(self.__traces)
 
-        return self.__traces
+        for trace in traces:
+
+            for a in reqA:
+                if a not in trace:
+                    traces.remove(trace)
+                    break
+
+            for a in forbA:
+                if a in trace:
+                    traces.remove(trace)
+                    break
+
+        filtered_log = TraceLog()
+        for trace in traces:
+            filtered_log[trace] = self[trace]
+            
+        return filtered_log
 
     @staticmethod
     def from_txt(filepath, delimiter=None, frequency_idx=0, first_activity_idx=2):
@@ -473,8 +495,7 @@ class TraceLog(MutableMapping):
             ):
                 if tree_event == "start":
                     trace += (elem.attrib["value"],)
-            
+
             elem.clear()
 
         return TraceLog(tracelog)
-
