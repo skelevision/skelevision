@@ -399,21 +399,24 @@ class TraceLog(MutableMapping):
             forbA = list(forbA)
 
         traces = list(self.__traces)
+        to_remove_idx = list()
 
-        for trace in traces:
+        for i, trace in enumerate(traces):
 
             for a in reqA:
                 if a not in trace:
-                    traces.remove(trace)
+                    to_remove_idx.append(i)
                     break
 
             for a in forbA:
                 if a in trace:
-                    traces.remove(trace)
+                    to_remove_idx.append(i)
                     break
 
+        filtered_traces = [trace for i, trace in enumerate(traces) if i not in to_remove_idx]
+
         filtered_log = TraceLog()
-        for trace in traces:
+        for trace in filtered_traces:
             filtered_log[trace] = self[trace]
             
         return filtered_log
