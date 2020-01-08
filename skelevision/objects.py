@@ -67,7 +67,7 @@ class TraceLog(MutableMapping):
 
     def augment(self, start="[>", end="[]"):
         """Returns a similar TraceLog object where each trace contains an aditional
-        start and end activity
+        start and end activity.
         """
         tl = TraceLog()
         for key, value in self.__traces.items():
@@ -294,6 +294,17 @@ class TraceLog(MutableMapping):
             f2a[value].add(key)
         return f2a
 
+    def statistics(self):
+        sum_c = self.sum_counter()
+        min_c = self.min_counter()
+        max_c = self.max_counter()
+
+        label_2_stats = dict()
+        for a in self.labels:
+            label_2_stats[a] = {"sum": sum_c[a], "min": min_c[a], "max": max_c[a]}
+
+        return label_2_stats
+
     def sum_counter(self):
         """Returns a dict, representing a Mapping from activity to the amount of times the activity
         appears in the TraceLog.
@@ -413,12 +424,14 @@ class TraceLog(MutableMapping):
                     to_remove_idx.append(i)
                     break
 
-        filtered_traces = [trace for i, trace in enumerate(traces) if i not in to_remove_idx]
+        filtered_traces = [
+            trace for i, trace in enumerate(traces) if i not in to_remove_idx
+        ]
 
         filtered_log = TraceLog()
         for trace in filtered_traces:
             filtered_log[trace] = self[trace]
-            
+
         return filtered_log
 
     @staticmethod
