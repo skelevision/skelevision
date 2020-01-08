@@ -50,9 +50,7 @@ class LogSkeleton(Miner):
         result['relationships']['dependency'] = set((tl.follows()).keys())
         
         # Step 6: Statistics
-        result['statistics']['dependency'] = tl.follows()
-        result['statistics']['sum'] = tl.sum_counter()
-        result['statistics']['max'] = tl.max_counter()
-        result['statistics']['min'] = tl.min_counter()
+        result['statistics']['node'] = tl.statistics()
+        result['statistics']['link'] = tl.follows()
 
         return result
