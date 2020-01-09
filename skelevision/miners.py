@@ -28,7 +28,6 @@ class LogSkeleton(Miner):
         tl = log.filter_traces(reqA, forbA)
 
         # Augment the TraceLog object with unique start and end activities
-        tl = tl.augment()
         result = {
             "relationships": dict(),
             "statistics": dict()
