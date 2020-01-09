@@ -1,0 +1,462 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>skelevision package &#8212; Skelevision 0.1.5 documentation</title>
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="skelevision" href="modules.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="skelevision"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Skelevision 0.1.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">skelevision</a> &#187;</li>
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">skelevision package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-skelevision.exceptions">skelevision.exceptions module</a></li>
+<li><a class="reference internal" href="#module-skelevision.miners">skelevision.miners module</a></li>
+<li><a class="reference internal" href="#module-skelevision.objects">skelevision.objects module</a></li>
+<li><a class="reference internal" href="#module-skelevision.utils">skelevision.utils module</a></li>
+<li><a class="reference internal" href="#module-skelevision">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="modules.html"
+                        title="previous chapter">skelevision</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/skelevision.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+
+  <div class="section" id="skelevision-package">
+<h1>skelevision package<a class="headerlink" href="#skelevision-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-skelevision.exceptions">
+<span id="skelevision-exceptions-module"></span><h2>skelevision.exceptions module<a class="headerlink" href="#module-skelevision.exceptions" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="skelevision.exceptions.IllegalLogAction">
+<em class="property">exception </em><code class="sig-prename descclassname">skelevision.exceptions.</code><code class="sig-name descname">IllegalLogAction</code><a class="headerlink" href="#skelevision.exceptions.IllegalLogAction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Raised when an incorrect action is performed on a log (e.g.
+in a trace-to-frequency log import duplicated traces)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-skelevision.miners">
+<span id="skelevision-miners-module"></span><h2>skelevision.miners module<a class="headerlink" href="#module-skelevision.miners" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="skelevision.miners.LogSkeleton">
+<em class="property">class </em><code class="sig-prename descclassname">skelevision.miners.</code><code class="sig-name descname">LogSkeleton</code><a class="headerlink" href="#skelevision.miners.LogSkeleton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skelevision.miners.Miner" title="skelevision.miners.Miner"><code class="xref py py-class docutils literal notranslate"><span class="pre">skelevision.miners.Miner</span></code></a></p>
+<dl class="method">
+<dt id="skelevision.miners.LogSkeleton.mine">
+<em class="property">static </em><code class="sig-name descname">mine</code><span class="sig-paren">(</span><em class="sig-param">log</em>, <em class="sig-param">reqA</em>, <em class="sig-param">forbA</em><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.miners.LogSkeleton.mine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dict, containing the mapping of the strings “relationships” and “statistics”
+to corresponding dict of relationships and statistics</p>
+<dl class="simple">
+<dt>log: <cite>TraceLog</cite></dt><dd><p>tracelog object</p>
+</dd>
+<dt>reqA: <cite>set()</cite></dt><dd><p>If one or more of the selected activities
+does not occur in a trace, the entire trace will be filtered out.</p>
+</dd>
+<dt>forbA: <cite>set()</cite></dt><dd><p>If one or more of the selected activities
+occurs in a trace, the entire trace will be filtered out.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt><cite>dict</cite></dt><dd><p>mapping of the strings “relationships” and “statistics”
+to corresponding dict of relationships and statistics</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<!-- <dl class="class">
+<dt id="skelevision.miners.Miner">
+<em class="property">class </em><code class="sig-prename descclassname">skelevision.miners.</code><code class="sig-name descname">Miner</code><a class="headerlink" href="#skelevision.miners.Miner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<dl class="method">
+<dt id="skelevision.miners.Miner.load">
+<em class="property">abstract </em><code class="sig-name descname">load</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.miners.Miner.load" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="skelevision.miners.Miner.mine">
+<em class="property">abstract </em><code class="sig-name descname">mine</code><span class="sig-paren">(</span><em class="sig-param">log</em><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.miners.Miner.mine" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="skelevision.miners.Miner.save">
+<em class="property">abstract </em><code class="sig-name descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.miners.Miner.save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl> -->
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-skelevision.objects">
+<span id="skelevision-objects-module"></span><h2>skelevision.objects module<a class="headerlink" href="#module-skelevision.objects" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="skelevision.objects.TraceLog">
+<em class="property">class </em><code class="sig-prename descclassname">skelevision.objects.</code><code class="sig-name descname">TraceLog</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.objects.TraceLog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.MutableMapping</span></code></p>
+<p>Representation of a trace log. Works like a base python dict,
+where the keys are tuples denoting individual traces
+(e.g. ‘(“a”, “b”, “c”)’ denoted trace ‘abc’) and the values
+denote the frequencies of the traces.</p>
+<dl class="method">
+<dt id="skelevision.objects.TraceLog.activity_2_freq">
+<em class="property">static </em><code class="sig-name descname">activity_2_freq</code><span class="sig-paren">(</span><em class="sig-param">trace</em><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.objects.TraceLog.activity_2_freq" title="Permalink to this definition">¶</a></dt>
+<dd><p>For a given trace, return a mapping from activity to frequency in trace.</p>
+<dl class="simple">
+<dt>trace: <cite>tuple</cite> of <cite>str</cite></dt><dd><p>a trace as a tuple of activities</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt><cite>dict</cite></dt><dd><p>mapping from activity to frequency in trace</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="skelevision.objects.TraceLog.always_after">
+<code class="sig-name descname">always_after</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.objects.TraceLog.always_after" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a set of tuples, representing the pairs of the activities
+which after any occurrence of the first activity the second activity always occurs.</p>
+<dl class="simple">
+<dt><cite>set``of `tuples</cite></dt><dd><p>pairs of the activities which after any occurrence of the first activity the
+second activity always occurs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="skelevision.objects.TraceLog.always_before">
+<code class="sig-name descname">always_before</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.objects.TraceLog.always_before" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a set of tuples, representing the pairs of the activities
+which before any occurrence of the first activity the second activity always occurs.</p>
+<dl class="simple">
+<dt><cite>set``of `tuples</cite></dt><dd><p>pairs of the activities which before any occurrence of the first activity the
+second activity always occurs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="skelevision.objects.TraceLog.augment">
+<code class="sig-name descname">augment</code><span class="sig-paren">(</span><em class="sig-param">start='[&gt;'</em>, <em class="sig-param">end='[]'</em><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.objects.TraceLog.augment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a similar TraceLog object where each trace contains an aditional
+start and end activity.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skelevision.objects.TraceLog.equivalence">
+<code class="sig-name descname">equivalence</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.objects.TraceLog.equivalence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a set of tuples, representing the pairs of the activities
+which are always together in all of the traces the same number of times.</p>
+<dl class="simple">
+<dt><cite>set``of `tuples</cite></dt><dd><p>the pairs of the activities which are always together in all of the
+traces the same number of times</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="skelevision.objects.TraceLog.filter_traces">
+<code class="sig-name descname">filter_traces</code><span class="sig-paren">(</span><em class="sig-param">reqA=None</em>, <em class="sig-param">forbA=None</em><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.objects.TraceLog.filter_traces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filters the tracelog based on required and forbidden activities.</p>
+<dl class="simple">
+<dt>reqA: <cite>set()</cite></dt><dd><p>If one or more of the selected activities
+does not occur in a trace, the entire trace will be filtered out.</p>
+</dd>
+<dt>forbA: <cite>set()</cite></dt><dd><p>If one or more of the selected activities
+occurs in a trace, the entire trace will be filtered out.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt><cite>TraceLog</cite></dt><dd><p>Mapping from activity to coresponding event list.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="skelevision.objects.TraceLog.follows">
+<code class="sig-name descname">follows</code><span class="sig-paren">(</span><em class="sig-param">distance=1</em><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.objects.TraceLog.follows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a mapping (aka. dict) from pairs of activities to frequency.
+A pair (a, b) is part of the mapping if activity b follows activity a,
+at a certain distance, in any of the traces.</p>
+<dl class="simple">
+<dt>distance: int</dt><dd><p>Distance two activities have to be appart to be counted in the mapping.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="skelevision.objects.TraceLog.freq_2_activities">
+<em class="property">static </em><code class="sig-name descname">freq_2_activities</code><span class="sig-paren">(</span><em class="sig-param">trace</em><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.objects.TraceLog.freq_2_activities" title="Permalink to this definition">¶</a></dt>
+<dd><p>For a given trace, return a mapping from frequency to set of activities,
+with that frequency in the trace.</p>
+<dl class="simple">
+<dt>trace: <cite>tuple</cite> of <cite>str</cite></dt><dd><p>a trace as a tuple of activities</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt><cite>dict</cite></dt><dd><p>mapping from frequency to <cite>set</cite> activities in trace</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="skelevision.objects.TraceLog.from_txt">
+<em class="property">static </em><code class="sig-name descname">from_txt</code><span class="sig-paren">(</span><em class="sig-param">filepath</em>, <em class="sig-param">delimiter=None</em>, <em class="sig-param">frequency_idx=0</em>, <em class="sig-param">first_activity_idx=2</em><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.objects.TraceLog.from_txt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses a <cite>.txt</cite> file containing a trace log and returns a TraceLog object of it.</p>
+<dl class="simple">
+<dt>filepath: path-like</dt><dd><p>The path to the <cite>.txt</cite> file.</p>
+</dd>
+<dt>delimiter: <cite>str</cite></dt><dd><p>Character delimiting the different values. Default None, thus splitting by all the whitespace.</p>
+</dd>
+<dt>frequency_idx: <cite>int</cite></dt><dd><p>Default 0.</p>
+</dd>
+<dt>first_activity_idx: <cite>int</cite></dt><dd><p>Default 2.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt><cite>TraceLog</cite></dt><dd><p>Mapping from activity to coresponding event list.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="skelevision.objects.TraceLog.from_xes">
+<em class="property">static </em><code class="sig-name descname">from_xes</code><span class="sig-paren">(</span><em class="sig-param">filepath</em><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.objects.TraceLog.from_xes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses a <cite>.xes</cite> or a <cite>.gz</cite> file containing a trace log and returns a TraceLog object of it.</p>
+<dl class="simple">
+<dt>filepath: path-like</dt><dd><p>The path to the <cite>.xes</cite> or <cite>.gz</cite> file.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt><cite>TraceLog</cite></dt><dd><p>Mapping from activity to coresponding event list.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="skelevision.objects.TraceLog.labels">
+<em class="property">property </em><code class="sig-name descname">labels</code><a class="headerlink" href="#skelevision.objects.TraceLog.labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all the unique labels of activities in the trace log.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skelevision.objects.TraceLog.max_counter">
+<code class="sig-name descname">max_counter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.objects.TraceLog.max_counter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dict, representing a Mapping from activity to the max amount of times the
+activity appears in any trace of the TraceLog.</p>
+<p>None</p>
+<dl class="simple">
+<dt>‘dict’</dt><dd><p>Mapping from activity to the max amount of times the activity appears in any trace of the TraceLog.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="skelevision.objects.TraceLog.min_counter">
+<code class="sig-name descname">min_counter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.objects.TraceLog.min_counter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dict, representing a Mapping from activity to the min amount of times the
+activity appears in any trace of the TraceLog.</p>
+<blockquote>
+<div><p>Parameters</p>
+</div></blockquote>
+<p>None</p>
+<dl class="simple">
+<dt>‘dict’</dt><dd><p>Mapping from activity to the min amount of times the activity appears in any trace of the TraceLog.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="skelevision.objects.TraceLog.never_together">
+<code class="sig-name descname">never_together</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.objects.TraceLog.never_together" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a set of tuples, representing the pairs of the activities
+which are never together in any of the traces.</p>
+<dl class="simple">
+<dt><cite>set</cite> of <cite>tuples</cite></dt><dd><p>the pairs of the activities which are never together in any of the traces</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="skelevision.objects.TraceLog.save_to_file">
+<code class="sig-name descname">save_to_file</code><span class="sig-paren">(</span><em class="sig-param">filepath</em>, <em class="sig-param">format='txt'</em><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.objects.TraceLog.save_to_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a TraceLog object as a <cite>.txt</cite> file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="skelevision.objects.TraceLog.statistics">
+<code class="sig-name descname">statistics</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.objects.TraceLog.statistics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dict, representing a Mapping from activity to it’s
+statistics, min, max and total occurance of the activity in the TraceLog.</p>
+<blockquote>
+<div><p>Parameters</p>
+</div></blockquote>
+<dl class="simple">
+<dt>activity: ‘str’</dt><dd><p>the name of the activity</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>‘dict’</dt><dd><p>Mapping from activity to the amount of times the activity appears in the TraceLog.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="skelevision.objects.TraceLog.sum_counter">
+<code class="sig-name descname">sum_counter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.objects.TraceLog.sum_counter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dict, representing a Mapping from activity to the amount of times the activity
+appears in the TraceLog.</p>
+<p>None</p>
+<dl class="simple">
+<dt>‘dict’</dt><dd><p>Mapping from activity to the min, max and total amount of times
+the activity appears in the TraceLog.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-skelevision.utils">
+<span id="skelevision-utils-module"></span><h2>skelevision.utils module<a class="headerlink" href="#module-skelevision.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="skelevision.utils.follows">
+<code class="sig-prename descclassname">skelevision.utils.</code><code class="sig-name descname">follows</code><span class="sig-paren">(</span><em class="sig-param">trace</em>, <em class="sig-param">distance=1</em><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.utils.follows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a mapping (aka. dict) from pairs of activities to frequency.
+A pair (a, b) is part of the mapping if activity b directly follows activity a,
+in any of the traces.</p>
+<dl class="simple">
+<dt>distance: int</dt><dd><p>Distance two activities have to be appart to be counted in the mapping.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="skelevision.utils.predecessors">
+<code class="sig-prename descclassname">skelevision.utils.</code><code class="sig-name descname">predecessors</code><span class="sig-paren">(</span><em class="sig-param">trace</em><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.utils.predecessors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a mapping (aka. dict) from pairs of activities to sets of activities which are followd by.
+A dict {a: (b, c)} is part of the mapping if activity b and c followed by activity a,
+in any of the traces.</p>
+<dl class="simple">
+<dt>trace: TraceLog</dt><dd><p>tracelog object</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt><cite>SortedSet</cite></dt><dd><p>the pairs of the activities which are the successors in any of the traces</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="skelevision.utils.successors">
+<code class="sig-prename descclassname">skelevision.utils.</code><code class="sig-name descname">successors</code><span class="sig-paren">(</span><em class="sig-param">trace</em><span class="sig-paren">)</span><a class="headerlink" href="#skelevision.utils.successors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a mapping (aka. dict) from pairs of activities to sets of activities which follows.
+A dict {a: (b, c)} is part of the mapping if activity b and c follows activity a,
+in any of the traces.</p>
+<dl class="simple">
+<dt>trace: TraceLog</dt><dd><p>tracelog object</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt><cite>SortedSet</cite></dt><dd><p>the pairs of the activities which are the successors in any of the traces</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-skelevision">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-skelevision" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="skelevision"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Skelevision 0.1.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >skelevision</a> &#187;</li>
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Nowraj.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.1.
+    </div>
+  </body>
+</html>
