@@ -295,6 +295,20 @@ class TraceLog(MutableMapping):
         return f2a
 
     def statistics(self):
+        """Returns a dict, representing a Mapping from activity to it's 
+        statistics, min, max and total occurance of the activity in the TraceLog.
+
+         Parameters
+        ----------
+        activity: 'str'
+            the name of the activity
+
+        Returns
+        -------
+        'dict'
+            Mapping from activity to the amount of times the activity appears in the TraceLog.
+        """
+
         sum_c = self.sum_counter()
         min_c = self.min_counter()
         max_c = self.max_counter()
@@ -309,15 +323,15 @@ class TraceLog(MutableMapping):
         """Returns a dict, representing a Mapping from activity to the amount of times the activity
         appears in the TraceLog.
 
-         Parameters
+        Parameters
         ----------
-        activity: 'str'
-            the name of the activity
+        None
 
         Returns
         -------
         'dict'
-            Mapping from activity to the amount of times the activity appears in the TraceLog.
+            Mapping from activity to the min, max and total amount of times
+            the activity appears in the TraceLog.
         """
         sum_c = dict()
 
@@ -336,8 +350,7 @@ class TraceLog(MutableMapping):
 
          Parameters
         ----------
-        activity: 'str'
-            the name of the activity
+        None
 
         Returns
         -------
@@ -362,16 +375,16 @@ class TraceLog(MutableMapping):
         """Returns a dict, representing a Mapping from activity to the max amount of times the
         activity appears in any trace of the TraceLog.
 
-         Parameters
+        Parameters
         ----------
-        activity: 'str'
-            the name of the activity
+        None
 
         Returns
         -------
         'dict'
             Mapping from activity to the max amount of times the activity appears in any trace of the TraceLog.
         """
+        
         max_c = dict()
         for trace in self.__traces:
             cur = self.activity_2_freq(trace)
@@ -399,6 +412,7 @@ class TraceLog(MutableMapping):
         `TraceLog`
             Mapping from activity to coresponding event list.
         """
+        
         if reqA is None:
             reqA = []
         if forbA is None:
@@ -454,6 +468,7 @@ class TraceLog(MutableMapping):
         `TraceLog`
             Mapping from activity to coresponding event list.
         """
+        
         tl = TraceLog()
 
         with open(filepath, "r") as f:
@@ -481,6 +496,19 @@ class TraceLog(MutableMapping):
 
     @staticmethod
     def from_xes(filepath):
+        """Parses a `.xes` or a `.gz` file containing a trace log and returns a TraceLog object of it.
+
+        Parameters
+        ----------
+        filepath: path-like
+            The path to the `.xes` or `.gz` file.
+
+        Returns
+        -------
+        `TraceLog`
+            Mapping from activity to coresponding event list.
+        """
+
         file_context = filepath
 
         if filepath.endswith(".gz"):

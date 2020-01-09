@@ -2,6 +2,16 @@ from itertools import combinations
 from sortedcontainers import SortedSet
 
 def follows(trace, distance=1):
+    """Returns a mapping (aka. dict) from pairs of activities to frequency.
+    A pair (a, b) is part of the mapping if activity b directly follows activity a,
+    in any of the traces.
+
+    Parameters
+    ----------
+    distance: int
+        Distance two activities have to be appart to be counted in the mapping.
+    """
+
     if not isinstance(trace, tuple):
         raise ValueError("Trace has to be a tuple of activities.")
     if not float(distance).is_integer():
@@ -23,6 +33,21 @@ def follows(trace, distance=1):
     return pairs
 
 def successors(trace):
+    """Returns a mapping (aka. dict) from pairs of activities to sets of activities which follows.
+    A dict {a: (b, c)} is part of the mapping if activity b and c follows activity a,
+    in any of the traces.
+
+    Parameters
+    ----------
+    trace: TraceLog
+        tracelog object
+
+    Returns
+    -------
+    `SortedSet`
+        the pairs of the activities which are the successors in any of the traces
+    """
+
     if not isinstance(trace, tuple):
         raise ValueError("Trace has to be a tuple of activities.")
 
@@ -38,6 +63,21 @@ def successors(trace):
     return s
 
 def predecessors(trace):
+    """Returns a mapping (aka. dict) from pairs of activities to sets of activities which are followd by.
+    A dict {a: (b, c)} is part of the mapping if activity b and c followed by activity a,
+    in any of the traces.
+
+    Parameters
+    ----------
+    trace: TraceLog
+        tracelog object
+
+    Returns
+    -------
+    `SortedSet`
+        the pairs of the activities which are the successors in any of the traces
+    """
+
     if not isinstance(trace, tuple):
         raise ValueError("Trace has to be a tuple of activities.")
 

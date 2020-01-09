@@ -25,6 +25,27 @@ class LogSkeleton(Miner):
 
     @staticmethod
     def mine(log, reqA, forbA):
+        """Returns a dict, containing the mapping of the strings "relationships" and "statistics"
+        to corresponding dict of relationships and statistics
+
+        Parameters
+        ----------
+        log: `TraceLog`
+            tracelog object
+        reqA: `set()`
+            If one or more of the selected activities
+            does not occur in a trace, the entire trace will be filtered out.
+        forbA: `set()`
+            If one or more of the selected activities
+            occurs in a trace, the entire trace will be filtered out.
+
+        Returns
+        -------
+        `dict`
+            mapping of the strings "relationships" and "statistics"
+            to corresponding dict of relationships and statistics
+        """
+
         tl = log.filter_traces(reqA, forbA)
 
         # Augment the TraceLog object with unique start and end activities
